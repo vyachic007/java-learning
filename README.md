@@ -1,2 +1,2 @@
-# java-learning
+# java-learning-course
 Борисов Вячеслав
