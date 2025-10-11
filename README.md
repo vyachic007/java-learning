@@ -1,2 +1,2 @@
-# java-learning-course
-Борисов Вячеслав
+# Java Learning Project
+Мой учебный проект 
