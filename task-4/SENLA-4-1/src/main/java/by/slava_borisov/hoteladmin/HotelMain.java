@@ -1,6 +1,6 @@
 package by.slava_borisov.hoteladmin;
 
-import by.slava_borisov.hoteladmin.logic.HotelSystem;
+import by.slava_borisov.hoteladmin.logic.HotelFacade;
 import by.slava_borisov.hoteladmin.logic.PriceManager;
 import by.slava_borisov.hoteladmin.model.*;
 import java.time.LocalDate;
@@ -8,10 +8,9 @@ import java.util.ArrayList;
 
 public class HotelMain {
     public static void main(String[] args) {
-        HotelSystem hotel = new HotelSystem();
-        PriceManager priceManager = new PriceManager();
+        HotelFacade hotel = new HotelFacade();
+        PriceManager priceManager = hotel.getPriceManager();
 
-        // Создаем номера
         Room room1 = new Room(1, "101", 5000.0, RoomStatus.AVAILABLE, null, 2, 4, new ArrayList<>());
         Room room2 = new Room(2, "102", 7500.0, RoomStatus.AVAILABLE, null, 3, 5, new ArrayList<>());
         Room room3 = new Room(3, "103", 10000.0, RoomStatus.AVAILABLE, null, 4, 3, new ArrayList<>());
@@ -20,7 +19,6 @@ public class HotelMain {
         hotel.addRoom(room2);
         hotel.addRoom(room3);
 
-        //Создаем услуги
         Amenity breakfast = new Amenity(1, "Завтрак", 800.0, "Еда");
         Amenity cleaning = new Amenity(2, "Уборка", 500.0, "Услуги");
         Amenity spa = new Amenity(3, "СПА", 2000.0, "Услуги");
@@ -29,9 +27,11 @@ public class HotelMain {
         hotel.addAmenity(cleaning);
         hotel.addAmenity(spa);
 
-        //Создаем гостей и заселяем их в номера
         Guest guest1 = new Guest(1, "Иван Иванов", "+7-999-123-45-67", new ArrayList<>());
         Guest guest2 = new Guest(2, "Борисов Вячеслав", "+7-999-765-43-21", new ArrayList<>());
+
+
+
 
         System.out.println("\n===== ТЕСТИРОВАНИЕ ФУНКЦИОНАЛА ===\n");
 
@@ -53,22 +53,19 @@ public class HotelMain {
         priceManager.updateAmenityPrice(breakfast, 900.0);
         System.out.println("  Цена услуги 'Завтрак' ПОСЛЕ: " + breakfast.getPrice() + " руб.");
 
-
-
-
         System.out.println("\n3. ТЕСТ ОШИБКИ - отрицательная цена:");
         try {
             priceManager.updateRoomPrice(room2, -1000.0);
         } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка поймана: " + e.getMessage());
+            System.out.println("  ✓ Ошибка поймана: " + e.getMessage());
         }
 
         System.out.println("\n4. СМЕНА СТАТУСА НОМЕРА:");
         hotel.setRoomStatus(3, RoomStatus.UNDER_MAINTENANCE);
 
         System.out.println("\n5. ДОБАВЛЕНИЕ УСЛУГ ГОСТЯМ:");
-        hotel.addAmenityToGuest(1, 1, LocalDate.now(), 2);  // Завтрак x2
-        hotel.addAmenityToGuest(2, 3, LocalDate.now(), 1);  // СПА x1
+        hotel.addAmenityToGuest(1, 1, LocalDate.now(), 2);
+        hotel.addAmenityToGuest(2, 3, LocalDate.now(), 1);
 
         System.out.println("\n=== ПРОСМОТР ДАННЫХ ===");
 
@@ -112,7 +109,8 @@ public class HotelMain {
         hotel.viewRoomsAvailableByDate(LocalDate.of(2025, 11, 10)).forEach(r ->
                 System.out.println("  Номер " + r.getNumber() + " свободен"));
 
-        System.out.println("\n17.СУММА К ОПЛАТЕ ДЛЯ ГОСТЯ 1:");
+
+        System.out.println("\n17. СУММА К ОПЛАТЕ ДЛЯ ГОСТЯ 1:");
         double payment1 = hotel.calculateGuestPayment(1);
         System.out.println("  Сумма: " + payment1 + " руб.");
 
@@ -135,12 +133,14 @@ public class HotelMain {
             amenities.forEach(a -> System.out.println("    - " + a.getName() + " (" + a.getPrice() + " руб.)"));
         });
 
+
         System.out.println("\n22. ДЕТАЛИ НОМЕРА 1:");
         System.out.println(hotel.getRoomDetails(1));
 
         System.out.println("\n23. ВЫСЕЛЕНИЕ:");
         hotel.checkOut(1);
 
+        
         System.out.println("\n=== ТЕСТИРОВАНИЕ ЗАВЕРШЕНО ===\n");
     }
 }
