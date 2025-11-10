@@ -1,0 +1,40 @@
+package by.slava_borisov.hoteladmin.ui.action;
+
+import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.controller.BookingController;
+import by.slava_borisov.hoteladmin.ui.ConsoleUI;
+import by.slava_borisov.hoteladmin.util.Messages;
+
+public class ShowLastBookingsAction extends BaseAction {
+    private final BookingController bookingController;
+    private final RoomController roomController;
+    private final ConsoleUI consoleUI;
+
+    public ShowLastBookingsAction(
+            BookingController bookingController,
+            RoomController roomController,
+            ConsoleUI consoleUI
+    ) {
+        super(consoleUI);
+        this.bookingController = bookingController;
+        this.roomController = roomController;
+        this.consoleUI = consoleUI;
+    }
+
+    @Override
+    public void execute() {
+        printHeader(Messages.SHOW_LAST_BOOKINGS_HEADER);
+
+        consoleUI.print(Messages.ENTER_ROOM_NUMBER);
+        String roomNumber = consoleUI.readLine();
+
+        Room room = roomController.findRoomByNumber(roomNumber);
+
+        if (room != null) {
+            bookingController.displayLastBookings(room.getId());
+        } else {
+            consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND);
+        }
+    }
+}
