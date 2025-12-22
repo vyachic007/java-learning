@@ -1,0 +1,49 @@
+package by.slava_borisov.hoteladmin.ui.action;
+
+import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.model.RoomStatus;
+import by.slava_borisov.hoteladmin.ui.ConsoleUI;
+import by.slava_borisov.hoteladmin.util.Messages;
+
+public class ChangeRoomStatusAction implements Action {
+    private RoomController roomController;
+    private ConsoleUI consoleUI;
+
+    public ChangeRoomStatusAction(RoomController roomController, ConsoleUI consoleUI) {
+        this.roomController = roomController;
+        this.consoleUI = consoleUI;
+    }
+
+    @Override
+    public void execute() {
+        consoleUI.print(Messages.ENTER_ROOM_NUMBER);
+        String roomNumber = consoleUI.readLine();
+        Room room = roomController.findRoomByNumber(roomNumber);
+        if (room != null) {
+            consoleUI.print(Messages.CHOOSE_STATUS);
+            int choice = consoleUI.readInt();
+            RoomStatus status = null;
+            switch (choice) {
+                case 1:
+                    status = RoomStatus.AVAILABLE;
+                    break;
+                case 2:
+                    status = RoomStatus.OCCUPIED;
+                    break;
+                case 3:
+                    status = RoomStatus.UNDER_MAINTENANCE;
+                    break;
+                case 4:
+                    status = RoomStatus.CLEANING;
+                    break;
+                default:
+                    consoleUI.displayErrorMessage(Messages.INVALID_STATUS);
+                    return;
+            }
+            roomController.setRoomStatus(room.getId(), status);
+        } else {
+            consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND);
+        }
+    }
+}
