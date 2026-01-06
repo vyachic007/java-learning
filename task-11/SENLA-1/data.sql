@@ -2,7 +2,7 @@ insert into rooms (number, price_per_night, status, capacity, stars) values
 ('101', 3500.00, 'AVAILABLE', 2, 3),
 ('102', 5200.00, 'AVAILABLE', 3, 4),
 ('201', 8000.00, 'CLEANING', 2, 5),
-('202', 2700.00, 'UNDERMAINTENANCE', 1, 2);
+('202', 2700.00, 'UNDER_MAINTENANCE', 1, 2);
 
 insert into guests (full_name, phone) values
 ('Иван Петров', '+7-900-111-22-33'),
