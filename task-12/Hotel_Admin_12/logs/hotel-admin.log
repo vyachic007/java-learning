@@ -1,0 +1,35 @@
+2026-01-14 21:56:40.475 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-01-14 21:56:40.487 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-01-14 21:56:40.488 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-01-14 21:56:49.685 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-14 21:56:49.686 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-14 21:56:49.820 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-14 21:57:00.142 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 3 в MainMenu
+2026-01-14 21:57:00.144 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить всех гостей
+2026-01-14 21:57:00.184 [main] INFO  b.s.h.controller.GuestController - Все гости успешно получены (3 гостей)
+2026-01-14 21:57:07.755 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 20 в MainMenu
+2026-01-14 21:57:22.317 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: добавление комнаты номер=7777, цена=666.0, вместимость=6, звезд=5, статус=AVAILABLE
+2026-01-14 21:57:22.387 [main] INFO  b.s.h.controller.RoomController - Комната с номером 7777 успешно добавлена
+2026-01-14 21:57:23.937 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-14 21:57:23.938 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-14 21:57:23.970 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-14 21:57:54.860 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 15 в MainMenu
+2026-01-14 21:57:57.053 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: поиск комнаты под номером 7777
+2026-01-14 21:57:57.081 [main] INFO  b.s.h.controller.RoomController - Комната под номером 7777 успешно найдена
+2026-01-14 21:57:57.081 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести детали комнаты id=8
+2026-01-14 21:57:57.101 [main] INFO  b.s.h.controller.RoomController - Детали комнаты id=8 успешно выведены
+2026-01-15 15:35:17.462 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-01-15 15:35:17.472 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-01-15 15:35:17.473 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-01-15 15:35:19.161 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-15 15:35:19.162 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-15 15:35:19.202 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-15 15:35:37.540 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-15 15:35:37.542 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-15 15:35:37.702 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-15 15:36:01.063 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 8 в MainMenu
+2026-01-15 15:36:02.902 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: поиск комнаты под номером 2345
+2026-01-15 15:36:02.944 [main] INFO  b.s.h.controller.RoomController - Комната под номером 2345 не найдена
+2026-01-15 15:36:14.978 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-15 15:36:14.979 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-15 15:36:15.008 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
