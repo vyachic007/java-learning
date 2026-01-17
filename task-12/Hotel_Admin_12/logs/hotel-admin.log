@@ -33,3 +33,40 @@
 2026-01-15 15:36:14.978 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
 2026-01-15 15:36:14.979 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
 2026-01-15 15:36:15.008 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-15 22:56:37.895 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-01-15 22:56:37.904 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-01-15 22:56:37.904 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-01-15 22:56:41.869 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-15 22:56:41.869 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-15 22:56:41.985 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-16 19:18:08.745 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-01-16 19:18:08.756 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-01-16 19:18:08.758 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-01-16 19:18:10.843 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-16 19:18:10.844 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-16 19:18:10.961 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-16 19:18:22.859 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 15 в MainMenu
+2026-01-16 19:18:24.553 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: поиск комнаты под номером 202
+2026-01-16 19:18:24.584 [main] INFO  b.s.h.controller.RoomController - Комната под номером 202 успешно найдена
+2026-01-16 19:18:24.584 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести детали комнаты id=4
+2026-01-16 19:18:24.600 [main] INFO  b.s.h.controller.RoomController - Детали комнаты id=4 успешно выведены
+2026-01-16 19:18:37.384 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 10 в MainMenu
+2026-01-16 19:18:37.385 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить все услуги
+2026-01-16 19:18:37.410 [main] INFO  b.s.h.controller.GuestController - Все услуги успешно получены (4 услуг)
+2026-01-16 19:18:54.848 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 21 в MainMenu
+2026-01-16 19:19:19.365 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: добавление услуги Кое-что  с ценой 777.0 и категорией мягкое яблоко
+2026-01-16 19:19:19.395 [main] INFO  b.s.h.controller.GuestController - Услуга Кое-что успешно добавлена
+2026-01-16 19:19:26.393 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 3 в MainMenu
+2026-01-16 19:19:26.394 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить всех гостей
+2026-01-16 19:19:26.426 [main] INFO  b.s.h.controller.GuestController - Все гости успешно получены (3 гостей)
+2026-01-16 19:19:36.155 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 10 в MainMenu
+2026-01-16 19:19:36.155 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить все услуги
+2026-01-16 19:19:36.183 [main] INFO  b.s.h.controller.GuestController - Все услуги успешно получены (5 услуг)
+2026-01-16 19:19:52.836 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 0 в MainMenu
+2026-01-17 19:41:21.941 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-01-17 19:41:21.957 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-01-17 19:41:21.958 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-01-17 19:41:23.670 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-01-17 19:41:23.671 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-01-17 19:41:23.833 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-01-17 19:41:28.958 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 0 в MainMenu
