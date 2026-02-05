@@ -1,0 +1,10 @@
+@echo off
+set DB_NAME=hoteladmin
+set DB_USER=postgres
+
+psql -U %DB_USER% -c "CREATE DATABASE %DB_NAME%;"
+psql -U %DB_USER% -d %DB_NAME% -f schema.sql
+psql -U %DB_USER% -d %DB_NAME% -f data.sql
+
+echo Done.
+pause
