@@ -14,6 +14,10 @@ public final class Messages {
     public static final String NO_VALUE = "Нет";
     public static final String INVALID_DATE = "Неверный формат даты. Введите дату в формате YYYY-MM-DD.";
     public static final String INVALID_DATE_RANGE = "Дата заезда должна быть раньше даты выезда и не может быть в прошлом.";
+    public static final String AVAILABLE = "СВОБОДНА";
+    public static final String OCCUPIED = "ЗАНЯТА";
+    public static final String MAINTENANCE = "РЕМОНТ";
+
 
     /// ROOM
     public static final String ROOM_NOT_FOUND = "Комната не найдена: id=%d";

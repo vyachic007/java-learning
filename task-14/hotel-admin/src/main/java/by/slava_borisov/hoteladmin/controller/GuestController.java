@@ -1,5 +1,8 @@
 package by.slava_borisov.hoteladmin.controller;
 
+import by.slava_borisov.hoteladmin.dto.AmenityDto;
+import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
+import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.model.AmenityUsage;
 import by.slava_borisov.hoteladmin.model.Guest;
@@ -39,7 +42,7 @@ public class GuestController {
             date = LocalDate.now();
         }
 
-        Result<AmenityUsage> result = hotelFacade.addAmenityToGuest(guestId, amenityId, date, quantity);
+        Result<AmenityUsageDto> result = hotelFacade.addAmenityToGuest(guestId, amenityId, date, quantity);
 
         if (!result.isSuccess() || result.getData() == null) {
             guestView.displayErrorMessage(result.getErrorMessage());
@@ -48,10 +51,10 @@ public class GuestController {
             return;
         }
 
-        AmenityUsage usage = result.getData();
+        AmenityUsageDto usage = result.getData();
 
-        Optional<Guest> guestOpt = hotelFacade.findGuestById(guestId);
-        Optional<Amenity> amenityOpt = hotelFacade.findAmenityById(amenityId);
+        Optional<GuestDto> guestOpt = hotelFacade.findGuestById(guestId);
+        Optional<AmenityDto> amenityOpt = hotelFacade.findAmenityById(amenityId);
 
         if (guestOpt.isEmpty() || amenityOpt.isEmpty()) {
             guestView.displayErrorMessage(Messages.GUEST_OR_AMENITY_NOT_FOUND);
@@ -60,12 +63,12 @@ public class GuestController {
             return;
         }
 
-        Guest guest = guestOpt.get();
-        Amenity amenity = amenityOpt.get();
+        GuestDto guestDto = guestOpt.get();
+        AmenityDto amenity = amenityOpt.get();
 
-        String guestName = guest.getFullName();
-        String serviceName = amenity.getName();
-        double totalPrice = amenity.getPrice() * usage.getQuantity();
+        String guestName = guestDto.fullName();
+        String serviceName = amenity.name();
+        double totalPrice = amenity.price() * usage.quantity();
 
         String message = String.format(Messages.AMENITY_ADDED_TO_GUEST, serviceName, guestName, totalPrice);
         guestView.displayMessage(message);
@@ -78,7 +81,7 @@ public class GuestController {
         log.info("Начало обработки команды: вывод услуг гостя с id={}, способ сортировки {}",
                 guestId, sortBy);
 
-        List<AmenityUsage> usages = hotelFacade.viewGuestAmenities(guestId);
+        List<AmenityUsageDto> usages = hotelFacade.viewGuestAmenities(guestId);
 
         if (usages == null || usages.isEmpty()) {
             guestView.displayAmenityUsages(List.of());
@@ -89,22 +92,22 @@ public class GuestController {
         List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < usages.size(); i++) {
-            AmenityUsage usage = usages.get(i);
+            AmenityUsageDto usage = usages.get(i);
 
-            Long amenityId = usage.getAmenity().getId();
-            Optional<Amenity> amenityOpt = hotelFacade.findAmenityById(amenityId);
+            Long amenityId = usage.amenityId();
+            Optional<AmenityDto> amenityOpt = hotelFacade.findAmenityById(amenityId);
 
-            String serviceName = amenityOpt.map(Amenity::getName).orElse(Messages.AMENITY_ID_PREFIX + amenityId);
-            double unitPrice = amenityOpt.map(Amenity::getPrice).orElse(0.0);
-            double totalPrice = unitPrice * usage.getQuantity();
+            String serviceName = amenityOpt.map(AmenityDto::name).orElse(Messages.AMENITY_ID_PREFIX + amenityId);
+            double unitPrice = amenityOpt.map(AmenityDto::price).orElse(0.0);
+            double totalPrice = unitPrice * usage.quantity();
 
             lines.add(String.format(
                     Messages.AMENITY_USAGE_FORMAT,
                     i + 1,
                     serviceName,
-                    usage.getQuantity(),
+                    usage.quantity(),
                     totalPrice,
-                    usage.getUsageDate()
+                    usage.usageDate()
             ));
         }
 
@@ -124,8 +127,8 @@ public class GuestController {
         log.info("Начало обработки команды: добавление услуги {}  с ценой {} и категорией {}",
                 name, price, category);
 
-        Amenity amenity = new Amenity(name, price, category);
-        Result<Amenity> result = hotelFacade.addAmenity(amenity);
+        AmenityDto amenityDto = new AmenityDto(null, name, price, category);
+        Result<AmenityDto> result = hotelFacade.addAmenity(amenityDto);
 
         if (result.isSuccess()) {
             guestView.displayMessage(String.format(Messages.AMENITY_ADDED, name));
@@ -151,30 +154,30 @@ public class GuestController {
         }
     }
 
-    public List<Amenity> getAmenitiesSortedByPrice() {
+    public List<AmenityDto> getAmenitiesSortedByPrice() {
         log.info("Начало обработки команды: получить услуги отсортированные по цене");
-        List<Amenity> amenities = hotelFacade.getAmenitiesSortedByPrice();
+        List<AmenityDto> amenities = hotelFacade.getAmenitiesSortedByPrice();
         log.info("Услуги отсортированные по цене успешно получены ({} услуг)", amenities.size());
         return amenities;
     }
 
-    public List<Amenity> getAmenitiesSortedByCategory() {
+    public List<AmenityDto> getAmenitiesSortedByCategory() {
         log.info("Начало обработки команды: получить услуги отсортированные по категории");
-        List<Amenity> amenities = hotelFacade.getAmenitiesSortedByCategory();
+        List<AmenityDto> amenities = hotelFacade.getAmenitiesSortedByCategory();
         log.info("Услуги отсортированные по категории успешно получены ({} услуг)", amenities.size());
         return amenities;
     }
 
-    public List<Amenity> getAllAmenities() {
+    public List<AmenityDto> getAllAmenities() {
         log.info("Начало обработки команды: получить все услуги");
-        List<Amenity> amenities = hotelFacade.getAllAmenities();
+        List<AmenityDto> amenities = hotelFacade.getAllAmenities();
         log.info("Все услуги успешно получены ({} услуг)", amenities.size());
         return amenities;
     }
 
-    public List<Guest> getAllGuests() {
+    public List<GuestDto> getAllGuests() {
         log.info("Начало обработки команды: получить всех гостей");
-        List<Guest> guests = hotelFacade.viewGuestsSortedBy(SortCriteria.BY_NAME);
+        List<GuestDto> guests = hotelFacade.viewGuestsSortedBy(SortCriteria.BY_NAME);
         log.info("Все гости успешно получены ({} гостей)", guests.size());
         return guests;
     }

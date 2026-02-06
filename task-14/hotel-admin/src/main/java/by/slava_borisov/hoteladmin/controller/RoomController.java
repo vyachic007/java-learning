@@ -1,8 +1,9 @@
 package by.slava_borisov.hoteladmin.controller;
 
 import by.slava_borisov.hoteladmin.config.ConfigManager;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
+import by.slava_borisov.hoteladmin.dto.RoomStatusDto;
 import by.slava_borisov.hoteladmin.exception.DuplicateRoomNumberException;
-import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.service.Result;
@@ -36,21 +37,21 @@ public class RoomController {
 
     public void displayAllRooms(SortCriteria sortCriteria) {
         log.info("Начало обработки команды: вывести все комнаты, критерий сортировки {}", sortCriteria);
-        List<Room> rooms = hotelFacade.viewAllRoomsSortedBy(sortCriteria);
+        List<RoomDto> rooms = hotelFacade.viewAllRoomsSortedBy(sortCriteria);
         roomView.displayRooms(rooms);
         log.info("Комнаты успешно выведены и отсортированы по критерию {}", sortCriteria);
     }
 
     public void displayAvailableRoomsOnDate(LocalDate date) {
         log.info("Начало обработки команды: вывести все свободные номера на дату {}", date);
-        List<Room> rooms = hotelFacade.getAvailableRoomsOnDate(date);
+        List<RoomDto> rooms = hotelFacade.getAvailableRoomsOnDate(date);
         roomView.displayRooms(rooms);
         log.info("Свободные номера на дату {} успешно выведены ({} номеров)", date, rooms.size());
     }
 
     public void displayRoomDetails(Long roomId) {
         log.info("Начало обработки команды: вывести детали комнаты id={}", roomId);
-        Optional<Room> roomOpt = hotelFacade.findRoomById(roomId);
+        Optional<RoomDto> roomOpt = hotelFacade.findRoomById(roomId);
         if (roomOpt.isPresent()) {
             roomView.displayRoomDetails(roomOpt.get());
             log.info("Детали комнаты id={} успешно выведены", roomId);
@@ -69,13 +70,15 @@ public class RoomController {
     ) throws DuplicateRoomNumberException {
         log.info("Начало обработки команды: добавление комнаты номер={}, цена={}, вместимость={}, звезд={}, статус={}",
                 number, price, capacity, stars, status);
-        Room room = new Room(number, price, status, capacity, stars);
 
-        Result<Room> result = hotelFacade.addRoom(room);
+        RoomStatusDto statusDto = RoomStatusDto.valueOf(status.name());
+        RoomDto roomDto = new RoomDto(null, number, price, statusDto, capacity, stars);
+
+        Result<RoomDto> result = hotelFacade.addRoom(roomDto);
 
         if (result.isSuccess() && result.getData() != null) {
-            Room created = result.getData();
-            roomView.displayMessage(String.format(Messages.ROOM_ADDED, created.getId()));
+            RoomDto created = result.getData();
+            roomView.displayMessage(String.format(Messages.ROOM_ADDED, created.id()));
             log.info("Комната с номером {} успешно добавлена", number);
         } else {
             roomView.displayErrorMessage(result.getErrorMessage());
@@ -83,9 +86,11 @@ public class RoomController {
         }
     }
 
-    public Room findRoomByNumber(String roomNumber) {
+
+
+    public RoomDto findRoomByNumber(String roomNumber) {
         log.info("Начало обработки команды: поиск комнаты под номером {}", roomNumber);
-        Room roomByNumber = hotelFacade.findRoomByNumber(roomNumber);
+        RoomDto roomByNumber = hotelFacade.findRoomByNumber(roomNumber);
 
         if (roomByNumber != null) {
             log.info("Комната под номером {} успешно найдена", roomNumber);
@@ -99,15 +104,15 @@ public class RoomController {
 
     public void changeRoomPriceByNumber(String roomNumber, double newPrice) {
         log.info("Начало обработки команды: изменить цену комнаты под номером {}, новая цена {}", roomNumber, newPrice);
-        Room room = findRoomByNumber(roomNumber);
+        RoomDto roomDto = findRoomByNumber(roomNumber);
 
-        if (room == null) {
+        if (roomDto == null) {
             consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND);
             log.error("Ошибка при изменении цены комнаты. Комната с номером {} не найдена", roomNumber);
             return;
         }
 
-        Result<Boolean> result = hotelFacade.changeRoomPrice(room.getId(), newPrice);
+        Result<Boolean> result = hotelFacade.changeRoomPrice(roomDto.id(), newPrice);
         if (result.isSuccess()) {
             roomView.displayMessage(Messages.OPERATION_SUCCESS);
             log.info("Цена комнаты под номером {} успешно обновлена на {}", roomNumber, newPrice);
@@ -138,9 +143,9 @@ public class RoomController {
     }
 
 
-    public List<Room> getRoomsSortedByPrice() {
+    public List<RoomDto> getRoomsSortedByPrice() {
         log.info("Начало обработки команды: получить все комнаты отсортированные по цене");
-        List<Room> roomsSortedByPrice = hotelFacade.viewAllRoomsSortedBy(SortCriteria.BY_PRICE);
+        List<RoomDto> roomsSortedByPrice = hotelFacade.viewAllRoomsSortedBy(SortCriteria.BY_PRICE);
         log.info("Комнаты отсортированные по цене успешно получены ({} комнат)", roomsSortedByPrice.size());
         return roomsSortedByPrice;
     }

@@ -1,6 +1,6 @@
 package by.slava_borisov.hoteladmin.controller;
 
-import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.view.ReportView;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class ReportController {
 
     public void displayAvailableRoomsOnDate(LocalDate date) {
         log.info("Начало обработки команды: вывести все свободные номера на дату {}", date);
-        List<Room> rooms = hotelFacade.getAvailableRoomsOnDate(date);
+        List<RoomDto> rooms = hotelFacade.getAvailableRoomsOnDate(date);
         reportView.displayRooms(rooms, date);
         log.info("Выведены все свободные номера на дату {}", date);
     }

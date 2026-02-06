@@ -6,6 +6,8 @@ import by.slava_borisov.hoteladmin.dao.BookingDao;
 import by.slava_borisov.hoteladmin.dao.AmenityUsageDao;
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.dao.RoomDao;
+import by.slava_borisov.hoteladmin.dto.*;
+import by.slava_borisov.hoteladmin.mapper.*;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
@@ -36,13 +38,21 @@ public class HotelFacade {
     private final GuestDao guestDao;
     private final BookingDao bookingDao;
 
+    private final RoomMapper roomMapper;
+    private final GuestMapper guestMapper;
+    private final AmenityMapper amenityMapper;
+    private final BookingMapper bookingMapper;
+    private final AmenityUsageMapper amenityUsageMapper;
 
-    public Result<Room> addRoom(Room room) {
+
+    public Result<RoomDto> addRoom(RoomDto roomDto) {
         try {
+            Room room = roomMapper.toEntity(roomDto);
             if (roomDao.findByNumber(room.getNumber()).isPresent()) {
                 return Result.failure(String.format(Messages.DUPLICATE_ROOM_NUMBER, room.getNumber()));
             }
-            return Result.success(roomDao.create(room));
+            Room created = roomDao.create(room);
+            return Result.success(roomMapper.toDto(created));
         } catch (IllegalArgumentException e) {
             return Result.failure(e.getMessage());
         } catch (SQLException e) {
@@ -50,17 +60,20 @@ public class HotelFacade {
         }
     }
 
-    public Optional<Room> findRoomById(Long roomId) {
+    public Optional<RoomDto> findRoomById(Long roomId) {
         try {
-            return roomDao.findById(roomId);
+            return roomDao.findById(roomId)
+                    .map(roomMapper::toDto);
         } catch (SQLException e) {
             return Optional.empty();
         }
     }
 
-    public Room findRoomByNumber(String roomNumber) {
+    public RoomDto findRoomByNumber(String roomNumber) {
         try {
-            return roomDao.findByNumber(roomNumber).orElse(null);
+            return roomDao.findByNumber(roomNumber)
+                    .map(roomMapper::toDto)
+                    .orElse(null);
         } catch (SQLException e) {
             return null;
         }
@@ -97,51 +110,72 @@ public class HotelFacade {
         }
     }
 
-    public List<Room> getAvailableRoomsOnDate(LocalDate date) {
+    public List<RoomDto> getAvailableRoomsOnDate(LocalDate date) {
         try {
-            return roomDao.findAvailableOnDate(date);
+            return roomDao
+                    .findAvailableOnDate(date)
+                    .stream()
+                    .map(roomMapper::toDto)
+                    .toList();
         } catch (SQLException e) {
             return List.of();
         }
     }
 
-    public List<Room> viewAllRoomsSortedBy(SortCriteria criteria) {
-        if (criteria == SortCriteria.BY_ID) {
-            try {
-                return roomDao.findAll();
-            } catch (SQLException e) {
-                return List.of();
+
+    public Result<BookingDto> checkIn(GuestDto guestDto, Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        try {
+            Guest guest = guestMapper.toEntity(guestDto);
+            Result<Booking> result = bookingManager.checkIn(guest, roomId, checkIn, checkOut);
+
+            if (result.isSuccess()) {
+                return Result.success(bookingMapper.toDto(result.getData()));
             }
+            return Result.failure(result.getErrorMessage());
+        } catch (Exception e) {
+            return Result.failure(Messages.DEFAULT_ERROR_MESSAGE);
         }
-
-        return switch (criteria) {
-            case BY_PRICE -> queryManager.getAllRoomsSortedByPrice();
-            case BY_CAPACITY -> queryManager.getAllRoomsSortedByCapacity();
-            case BY_STARS -> queryManager.getAllRoomsSortedByStars();
-            default -> List.of();
-        };
     }
 
-    public Result<Booking> checkIn(Guest guest, Long roomId, LocalDate checkIn, LocalDate checkOut) {
-        return bookingManager.checkIn(guest, roomId, checkIn, checkOut);
-    }
 
     public Result<Boolean> checkOut(Long roomId) {
         return bookingManager.checkOut(roomId);
     }
 
-    public Result<Amenity> addAmenity(Amenity amenity) {
+    public Result<AmenityDto> addAmenity(AmenityDto amenityDto) {
         try {
+            Amenity amenity = amenityMapper.toEntity(amenityDto);
             Amenity created = amenityDao.create(amenity);
-            return Result.success(created);
+            return Result.success(amenityMapper.toDto(created));
         } catch (SQLException e) {
             return Result.failure(Messages.DEFAULT_ERROR_MESSAGE);
         }
     }
 
-    public List<Amenity> getAllAmenities() {
+    public List<GuestDto> viewGuestsSortedBy(SortCriteria criteria) {
+        return switch (criteria) {
+            case BY_NAME -> queryManager.getGuestsSortedByName()
+                    .stream().map(guestMapper::toDto).toList();
+            case BY_CHECK_OUT_DATE -> queryManager.getGuestsSortedByCheckOutDate()
+                    .stream().map(guestMapper::toDto).toList();
+            case BY_ID, default -> {
+                try {
+                    yield guestDao.findAll()
+                            .stream().map(guestMapper::toDto).toList();
+                } catch (SQLException e) {
+                    yield List.of();
+                }
+            }
+        };
+    }
+
+
+    public List<AmenityDto> getAllAmenities() {
         try {
-            return amenityDao.findAll();
+            return amenityDao.findAll()
+                    .stream()
+                    .map(amenityMapper::toDto)
+                    .toList();
         } catch (SQLException e) {
             return List.of();
         }
@@ -159,46 +193,54 @@ public class HotelFacade {
         }
     }
 
-    public Optional<Amenity> findAmenityById(Long amenityId) {
+    public Optional<AmenityDto> findAmenityById(Long amenityId) {
         try {
-            return amenityDao.findById(amenityId);
+            return amenityDao.findById(amenityId)
+                    .map(amenityMapper::toDto);
         } catch (SQLException e) {
             return Optional.empty();
         }
     }
 
-    public Result<AmenityUsage> addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity) {
-        return bookingManager.addAmenityToGuest(guestId, amenityId, usageDate, quantity);
+    public Result<AmenityUsageDto> addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity) {
+        Result<AmenityUsage> result = bookingManager.addAmenityToGuest(guestId, amenityId, usageDate, quantity);
+
+        if (result.isSuccess() && result.getData() != null) {
+            return Result.success(amenityUsageMapper.toDto(result.getData()));
+        }
+        return Result.failure(result.getErrorMessage());
     }
 
-    public Optional<Guest> findGuestById(Long guestId) {
+
+    public Optional<GuestDto> findGuestById(Long guestId) {
         try {
-            return guestDao.findById(guestId);
+            return guestDao.findById(guestId)
+                    .map(guestMapper::toDto);
         } catch (SQLException e) {
             return Optional.empty();
         }
     }
 
-    public List<Guest> viewGuestsSortedBy(SortCriteria criteria) {
+    public List<RoomDto> viewAllRoomsSortedBy(SortCriteria criteria) {
         return switch (criteria) {
-            case BY_NAME -> queryManager.getGuestsSortedByName();
-            case BY_CHECK_OUT_DATE -> queryManager.getGuestsSortedByCheckOutDate();
             case BY_ID -> {
                 try {
-                    yield guestDao.findAll();
+                    yield roomDao.findAll()
+                            .stream().map(roomMapper::toDto).toList();
                 } catch (SQLException e) {
                     yield List.of();
                 }
             }
-            default -> {
-                try {
-                    yield guestDao.findAll();
-                } catch (SQLException e) {
-                    yield List.of();
-                }
-            }
+            case BY_PRICE -> queryManager.getAllRoomsSortedByPrice()
+                    .stream().map(roomMapper::toDto).toList();
+            case BY_CAPACITY -> queryManager.getAllRoomsSortedByCapacity()
+                    .stream().map(roomMapper::toDto).toList();
+            case BY_STARS -> queryManager.getAllRoomsSortedByStars()
+                    .stream().map(roomMapper::toDto).toList();
+            default -> List.of();
         };
     }
+
 
     public int getAvailableRoomsCount() {
         return queryManager.countAvailableRooms();
@@ -208,40 +250,57 @@ public class HotelFacade {
         return queryManager.countCurrentGuests();
     }
 
-    public List<Booking> viewRoomHistory(Long roomId) {
+    public List<BookingDto> viewRoomHistory(Long roomId) {
         int limit = configManager.getGuestHistoryLimit();
-        return queryManager.getLastBookings(roomId, limit);
+        return queryManager.getLastBookings(roomId, limit)
+                .stream()
+                .map(bookingMapper::toDto)
+                .toList();
     }
 
-    public List<Room> viewAllRoomsSortedByStars() {
-        return queryManager.getAllRoomsSortedByStars();
+    public List<RoomDto> viewAllRoomsSortedByStars() {
+        return queryManager.getAllRoomsSortedByStars()
+                .stream()
+                .map(roomMapper::toDto)
+                .toList();
     }
 
-    public List<Amenity> getAmenitiesSortedByPrice() {
-        return queryManager.getAmenitiesSortedByPrice();
+    public List<AmenityDto> getAmenitiesSortedByPrice() {
+        return queryManager.getAmenitiesSortedByPrice()
+                .stream()
+                .map(amenityMapper::toDto)
+                .toList();
     }
 
-    public List<Amenity> getAmenitiesSortedByCategory() {
-        return queryManager.getAmenitiesSortedByCategory();
+    public List<AmenityDto> getAmenitiesSortedByCategory() {
+        return queryManager.getAmenitiesSortedByCategory()
+                .stream()
+                .map(amenityMapper::toDto)
+                .toList();
     }
 
-    public List<AmenityUsage> viewGuestAmenities(Long guestId) {
+    public List<AmenityUsageDto> viewGuestAmenities(Long guestId) {
         try {
-            Optional<Booking> activeBookingOpt = bookingDao.findActiveByGuestId(guestId, LocalDate.now());
+            Optional<Booking> activeBookingOpt = bookingDao.findActiveByGuestId(guestId, LocalDate.now()); // ✅ Entity!
             if (activeBookingOpt.isEmpty()) {
                 return List.of();
             }
 
             Long bookingId = activeBookingOpt.get().getId();
-            return amenityUsageDao.findByBookingId(bookingId);
+            return amenityUsageDao.findByBookingId(bookingId)
+                    .stream()
+                    .map(amenityUsageMapper::toDto)
+                    .toList();
         } catch (SQLException e) {
             return List.of();
         }
     }
 
-    public Optional<Guest> findGuestByPhone(String phone) {
+
+    public Optional<GuestDto> findGuestByPhone(String phone) {
         try {
-            return guestDao.findByPhone(phone);
+            return guestDao.findByPhone(phone)
+                    .map(guestMapper::toDto);
         } catch (SQLException e) {
             return Optional.empty();
         }

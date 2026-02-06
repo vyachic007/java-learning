@@ -1,5 +1,7 @@
 package by.slava_borisov.hoteladmin.controller;
 
+import by.slava_borisov.hoteladmin.dto.BookingDto;
+import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
@@ -26,16 +28,16 @@ public class BookingController {
     private final BookingView bookingView;
 
 
-    public void checkIn(Guest guest, Long roomId, LocalDate checkIn, LocalDate checkOut) {
-        log.info("Начало обработки команды: заселение гостя {} в номер {}", guest.getFullName(), roomId);
-        Result<Booking> result = hotelFacade.checkIn(guest, roomId, checkIn, checkOut);
+    public void checkIn(GuestDto guestDto, Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        log.info("Начало обработки команды: заселение гостя {} в номер {}", guestDto.fullName(), roomId);
+        Result<BookingDto> result = hotelFacade.checkIn(guestDto, roomId, checkIn, checkOut);
 
         if (result.isSuccess()) {
-            bookingView.displayCheckInSuccess(guest.getFullName(), roomId);
-            log.info("Заселение гостя {} в номер {} успешно завершено", guest.getFullName(), roomId);
+            bookingView.displayCheckInSuccess(guestDto.fullName(), roomId);
+            log.info("Заселение гостя {} в номер {} успешно завершено", guestDto.fullName(), roomId);
         } else {
             bookingView.displayBookingsInfo(List.of(Messages.ERROR_PREFIX + result.getErrorMessage()));
-            log.error("Ошибка при заселении гостя {}: {}", guest.getFullName(), result.getErrorMessage());
+            log.error("Ошибка при заселении гостя {}: {}", guestDto.fullName(), result.getErrorMessage());
         }
     }
 
@@ -53,18 +55,18 @@ public class BookingController {
 
     public void displayLastBookings(Long roomId) {
         log.info("Начало обработки команды: вывести последние бронирования номера {}", roomId);
-        List<Booking> bookings = hotelFacade.viewRoomHistory(roomId);
+        List<BookingDto> bookings = hotelFacade.viewRoomHistory(roomId);
 
         List<String> lines = new ArrayList<>();
         if (bookings != null) {
-            for (Booking b : bookings) {
+            for (BookingDto b : bookings) {
                 lines.add(String.format(
                         Messages.BOOKING_INFO_FORMAT,
-                        b.getId(),
-                        b.getGuest().getId(),
-                        b.getRoom().getId(),
-                        b.getCheckInDate(),
-                        b.getCheckOutDate()
+                        b.id(),
+                        b.guestId(),
+                        b.roomId(),
+                        b.checkInDate(),
+                        b.checkOutDate()
                 ));
             }
         }
