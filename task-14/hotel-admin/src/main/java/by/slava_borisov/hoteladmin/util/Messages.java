@@ -7,16 +7,16 @@ public final class Messages {
 
     /// COMMON / GENERAL
     public static final String DEFAULT_ERROR_MESSAGE = "Произошла ошибка. Повторите попытку.";
-    public static final String FAILED_TO_INJECT_DEPENDENCIES = "Не удалось внедрить зависимости.";
     public static final String OPERATION_SUCCESS = "Операция выполнена успешно.";
     public static final String SUCCESS_OPERATION = "Операция успешно выполнена";
     public static final String ERROR_PREFIX = "Ошибка: ";
-    public static final String NO_VALUE = "Нет";
     public static final String INVALID_DATE = "Неверный формат даты. Введите дату в формате YYYY-MM-DD.";
     public static final String INVALID_DATE_RANGE = "Дата заезда должна быть раньше даты выезда и не может быть в прошлом.";
     public static final String AVAILABLE = "СВОБОДНА";
     public static final String OCCUPIED = "ЗАНЯТА";
-    public static final String MAINTENANCE = "РЕМОНТ";
+    public static final String UNDER_MAINTENANCE = "НА РЕМОНТЕ";
+    public static final String CLEANING = "УБОРКА";
+
 
 
     /// ROOM

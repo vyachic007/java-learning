@@ -2,7 +2,6 @@ package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.RoomController;
 import by.slava_borisov.hoteladmin.dto.RoomDto;
-import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -26,10 +25,14 @@ public class ChangeRoomStatusAction implements Action {
             RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
             if (roomDto != null) {
                 consoleUI.print(Messages.CHOOSE_STATUS + "\n");
-                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 1, consoleUI.translateRoomStatus(RoomStatus.AVAILABLE)) + "\n");
-                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 2, consoleUI.translateRoomStatus(RoomStatus.OCCUPIED)) + "\n");
-                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 3, consoleUI.translateRoomStatus(RoomStatus.UNDER_MAINTENANCE)) + "\n");
-                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 4, consoleUI.translateRoomStatus(RoomStatus.CLEANING)) + "\n");
+                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 1,
+                        consoleUI.translateRoomStatus(RoomStatus.AVAILABLE)) + "\n");
+                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 2,
+                        consoleUI.translateRoomStatus(RoomStatus.OCCUPIED)) + "\n");
+                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 3,
+                        consoleUI.translateRoomStatus(RoomStatus.UNDER_MAINTENANCE)) + "\n");
+                consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 4,
+                        consoleUI.translateRoomStatus(RoomStatus.CLEANING)) + "\n");
 
                 int choice = consoleUI.readInt();
                 RoomStatus status = null;

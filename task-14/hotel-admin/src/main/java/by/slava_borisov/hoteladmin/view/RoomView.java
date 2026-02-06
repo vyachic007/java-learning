@@ -69,7 +69,7 @@ public class RoomView extends ConsoleView {
         printError(message);
     }
 
-    private record RoomInfo(Long id, String number, double pricePerNight, int capacity, int stars, String statusText) {}
+    private record RoomInfo(Long id, String number, double pricePerNight, int capacity, int stars, String statusText) { }
 
     private RoomInfo extractRoomInfo(Object roomObj) {
         if (roomObj instanceof RoomDto dto) {
@@ -99,10 +99,12 @@ public class RoomView extends ConsoleView {
         return switch (statusDto.name()) {
             case "AVAILABLE" -> Messages.AVAILABLE;
             case "OCCUPIED" -> Messages.OCCUPIED;
-            case "MAINTENANCE" -> Messages.MAINTENANCE;
+            case "UNDER_MAINTENANCE" -> Messages.UNDER_MAINTENANCE;
+            case "CLEANING" -> Messages.CLEANING;
             default -> statusDto.name();
         };
     }
+
 
     private String roomStatusToString(RoomStatus status) {
         if (status == null) return Messages.NO_ROOMS;
@@ -110,7 +112,7 @@ public class RoomView extends ConsoleView {
         return switch (statusName) {
             case "AVAILABLE" -> Messages.AVAILABLE;
             case "OCCUPIED" -> Messages.OCCUPIED;
-            case "MAINTENANCE" -> Messages.MAINTENANCE;
+            case "UNDER_MAINTENANCE" -> Messages.UNDER_MAINTENANCE;
             default -> statusName;
         };
     }

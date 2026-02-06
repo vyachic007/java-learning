@@ -6,8 +6,16 @@ import by.slava_borisov.hoteladmin.dao.BookingDao;
 import by.slava_borisov.hoteladmin.dao.AmenityUsageDao;
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.dao.RoomDao;
-import by.slava_borisov.hoteladmin.dto.*;
-import by.slava_borisov.hoteladmin.mapper.*;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
+import by.slava_borisov.hoteladmin.dto.GuestDto;
+import by.slava_borisov.hoteladmin.dto.AmenityDto;
+import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
+import by.slava_borisov.hoteladmin.dto.BookingDto;
+import by.slava_borisov.hoteladmin.mapper.AmenityUsageMapper;
+import by.slava_borisov.hoteladmin.mapper.AmenityMapper;
+import by.slava_borisov.hoteladmin.mapper.BookingMapper;
+import by.slava_borisov.hoteladmin.mapper.GuestMapper;
+import by.slava_borisov.hoteladmin.mapper.RoomMapper;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
@@ -37,7 +45,6 @@ public class HotelFacade {
     private final AmenityUsageDao amenityUsageDao;
     private final GuestDao guestDao;
     private final BookingDao bookingDao;
-
     private final RoomMapper roomMapper;
     private final GuestMapper guestMapper;
     private final AmenityMapper amenityMapper;
@@ -158,16 +165,18 @@ public class HotelFacade {
                     .stream().map(guestMapper::toDto).toList();
             case BY_CHECK_OUT_DATE -> queryManager.getGuestsSortedByCheckOutDate()
                     .stream().map(guestMapper::toDto).toList();
-            case BY_ID, default -> {
+            case BY_ID -> {
                 try {
-                    yield guestDao.findAll()
-                            .stream().map(guestMapper::toDto).toList();
+                    List<Guest> guests = guestDao.findAll();
+                    yield guests.stream().map(guestMapper::toDto).toList();
                 } catch (SQLException e) {
                     yield List.of();
                 }
             }
+            default -> List.of();
         };
     }
+
 
 
     public List<AmenityDto> getAllAmenities() {

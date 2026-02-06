@@ -7,4 +7,4 @@ public record RoomDto(
         RoomStatusDto status,
         int capacity,
         int stars
-) {}
+) { }

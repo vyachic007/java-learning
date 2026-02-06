@@ -5,4 +5,4 @@ public record AmenityDto(
         String name,
         double price,
         String category
-) {}
+) { }

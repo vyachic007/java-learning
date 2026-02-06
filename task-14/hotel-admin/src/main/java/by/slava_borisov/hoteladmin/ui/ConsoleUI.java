@@ -113,7 +113,7 @@ public class ConsoleUI {
         return switch (status) {
             case AVAILABLE -> Messages.STATUS_AVAILABLE;
             case OCCUPIED -> Messages.STATUS_OCCUPIED;
-            case UNDER_MAINTENANCE -> Messages.STATUS_UNDER_MAINTENANCE;
+            case UNDER_MAINTENANCE -> Messages.UNDER_MAINTENANCE;
             case CLEANING -> Messages.STATUS_CLEANING;
         };
     }

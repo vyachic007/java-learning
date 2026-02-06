@@ -38,7 +38,8 @@ public class GuestView extends ConsoleView {
         printSeparator();
     }
 
-    private record AmenityInfo(String name, double price, String category) {}
+    private record AmenityInfo(String name, double price, String category) {
+    }
 
     private AmenityInfo extractAmenityInfo(Object amenityObj) {
         if (amenityObj instanceof AmenityDto dto) {

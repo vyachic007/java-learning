@@ -4,4 +4,4 @@ public record GuestDto(
         Long id,
         String fullName,
         String phone
-) {}
+) { }

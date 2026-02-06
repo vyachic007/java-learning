@@ -2,8 +2,6 @@ package by.slava_borisov.hoteladmin.controller;
 
 import by.slava_borisov.hoteladmin.dto.BookingDto;
 import by.slava_borisov.hoteladmin.dto.GuestDto;
-import by.slava_borisov.hoteladmin.model.Booking;
-import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.service.Result;
 import by.slava_borisov.hoteladmin.util.Messages;

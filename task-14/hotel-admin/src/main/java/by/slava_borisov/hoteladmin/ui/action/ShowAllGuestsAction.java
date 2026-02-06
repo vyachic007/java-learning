@@ -2,7 +2,6 @@ package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.GuestController;
 import by.slava_borisov.hoteladmin.dto.GuestDto;
-import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.util.Messages;
 
 import java.util.List;

@@ -9,4 +9,4 @@ public record BookingDto(
         LocalDate checkInDate,
         LocalDate checkOutDate,
         LocalDate actualCheckOutDate
-) {}
+) { }

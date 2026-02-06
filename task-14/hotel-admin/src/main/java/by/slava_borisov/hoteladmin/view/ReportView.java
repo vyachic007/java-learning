@@ -42,7 +42,7 @@ public class ReportView extends ConsoleView {
         printSeparator();
     }
 
-    private record RoomInfo(Long id, String number, double pricePerNight, int capacity, int stars, String statusText) {}
+    private record RoomInfo(Long id, String number, double pricePerNight, int capacity, int stars, String statusText) { }
 
     private RoomInfo extractRoomInfo(Object roomObj) {
         if (roomObj instanceof RoomDto dto) {
@@ -72,7 +72,7 @@ public class ReportView extends ConsoleView {
         return switch (statusDto.name()) {
             case "AVAILABLE" -> Messages.AVAILABLE;
             case "OCCUPIED" -> Messages.OCCUPIED;
-            case "MAINTENANCE" -> Messages.MAINTENANCE;
+            case "MAINTENANCE" -> Messages.UNDER_MAINTENANCE;
             default -> statusDto.name();
         };
     }
@@ -83,7 +83,7 @@ public class ReportView extends ConsoleView {
         return switch (statusName) {
             case "AVAILABLE" -> Messages.AVAILABLE;
             case "OCCUPIED" -> Messages.OCCUPIED;
-            case "MAINTENANCE" -> Messages.MAINTENANCE;
+            case "MAINTENANCE" -> Messages.UNDER_MAINTENANCE;
             default -> statusName;
         };
     }

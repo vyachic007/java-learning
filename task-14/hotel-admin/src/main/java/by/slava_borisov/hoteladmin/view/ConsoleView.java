@@ -1,6 +1,5 @@
 package by.slava_borisov.hoteladmin.view;
 
-import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.util.Messages;
 
 public abstract class ConsoleView {
@@ -17,16 +16,6 @@ public abstract class ConsoleView {
         System.out.println(Messages.SEPARATOR_LINE);
     }
 
-
-    protected String translateRoomStatus(RoomStatus status) {
-        if (status == null) return Messages.STATUS_UNKNOWN;
-        return switch (status) {
-            case AVAILABLE -> Messages.STATUS_AVAILABLE;
-            case OCCUPIED -> Messages.STATUS_OCCUPIED;
-            case UNDER_MAINTENANCE -> Messages.STATUS_UNDER_MAINTENANCE;
-            case CLEANING -> Messages.STATUS_CLEANING;
-        };
-    }
 
     protected void printSuccess(String message) {
         System.out.println(message);

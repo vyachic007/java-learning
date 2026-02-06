@@ -1,9 +1,7 @@
 package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.GuestController;
-import by.slava_borisov.hoteladmin.dao.AmenityDao;
 import by.slava_borisov.hoteladmin.dto.AmenityDto;
-import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
 

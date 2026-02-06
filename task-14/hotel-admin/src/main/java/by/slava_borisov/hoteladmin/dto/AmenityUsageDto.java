@@ -8,4 +8,4 @@ public record AmenityUsageDto(
         Long bookingId,
         LocalDate usageDate,
         int quantity
-) {}
+) { }
