@@ -2,8 +2,8 @@ package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.BookingController;
 import by.slava_borisov.hoteladmin.controller.RoomController;
-import by.slava_borisov.hoteladmin.model.Guest;
-import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.dto.GuestDto;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -39,8 +39,8 @@ public class CheckInAction extends BaseAction {
         print(Messages.ENTER_ROOM_NUMBER);
         String roomNumber = readLine();
 
-        Room room = roomController.findRoomByNumber(roomNumber);
-        if (room == null) {
+        RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
+        if (roomDto == null) {
             consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND_DETAILS);
             return;
         }
@@ -79,19 +79,19 @@ public class CheckInAction extends BaseAction {
             }
         }
 
-        Guest guest = null;
+        GuestDto guestDto = null;
         try {
-            Optional<Guest> guestOpt = hotelFacade.findGuestByPhone(phone);
+            Optional<GuestDto> guestOpt = hotelFacade.findGuestByPhone(phone);
             if (guestOpt.isPresent()) {
-                guest = guestOpt.get();
+                guestDto = guestOpt.get();
             } else {
-                guest = new Guest(fullName, phone);
+                guestDto = new GuestDto(null, fullName, phone);
             }
         } catch (Exception e) {
             consoleUI.displayErrorMessage(e.getMessage());
             return;
         }
 
-        bookingController.checkIn(guest, room.getId(), checkIn, checkOut);
+        bookingController.checkIn(guestDto, roomDto.id(), checkIn, checkOut);
     }
 }

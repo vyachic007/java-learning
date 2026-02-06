@@ -1,6 +1,7 @@
 package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -26,8 +27,8 @@ public class CalculateRoomPaymentAction implements Action {
         String roomNumber = consoleUI.readLine();
 
         try {
-            Room room = roomController.findRoomByNumber(roomNumber);
-            if (room == null) {
+            RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
+            if (roomDto == null) {
                 consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND_DETAILS);
                 return;
             }
@@ -61,7 +62,7 @@ public class CalculateRoomPaymentAction implements Action {
             }
 
             long days = ChronoUnit.DAYS.between(checkIn, checkOut);
-            double total = room.getPricePerNight() * days;
+            double total = roomDto.pricePerNight() * days;
             consoleUI.displayMessage(String.format(Messages.ROOM_PAYMENT, total));
         } catch (Exception e) {
             consoleUI.displayErrorMessage(e.getMessage());

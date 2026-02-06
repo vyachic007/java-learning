@@ -2,6 +2,7 @@ package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.BookingController;
 import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -25,11 +26,11 @@ public class CheckOutAction extends BaseAction {
         print(Messages.ENTER_ROOM_NUMBER);
         String roomNumber = readLine();
 
-        Room room = roomController.findRoomByNumber(roomNumber);
+        RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
 
-        if (room != null) {
+        if (roomDto != null) {
             try {
-                bookingController.checkOut(room.getId());
+                bookingController.checkOut(roomDto.id());
             } catch (Exception e) {
                 consoleUI.displayErrorMessage(e.getMessage());
             }

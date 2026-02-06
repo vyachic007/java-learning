@@ -1,6 +1,8 @@
 package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.GuestController;
+import by.slava_borisov.hoteladmin.dao.AmenityDao;
+import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -21,17 +23,17 @@ public class ShowPricesAction implements Action {
     @Override
     public void execute() {
         try {
-            List<Amenity> amenities = guestController.getAllAmenities();
+            List<AmenityDto> amenities = guestController.getAllAmenities();
             consoleUI.print(Messages.PRICE_LIST_HEADER);
             int n = 1;
-            for (Amenity amenity : amenities) {
+            for (AmenityDto amenityDto : amenities) {
                 consoleUI.print(String.format(
                         Messages.PRICE_LIST_ROW,
                         n++,
-                        amenity.getName(),
-                        amenity.getId(),
-                        amenity.getPrice(),
-                        amenity.getCategory()
+                        amenityDto.name(),
+                        amenityDto.id(),
+                        amenityDto.price(),
+                        amenityDto.category()
                 ));
             }
         } catch (Exception e) {

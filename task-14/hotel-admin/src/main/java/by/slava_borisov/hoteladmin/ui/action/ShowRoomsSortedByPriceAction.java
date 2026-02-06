@@ -1,7 +1,7 @@
 package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.RoomController;
-import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
 import by.slava_borisov.hoteladmin.view.RoomView;
@@ -23,7 +23,7 @@ public class ShowRoomsSortedByPriceAction extends BaseAction {
     @Override
     public void execute() {
         printHeader(Messages.SHOW_ROOMS_SORTED_BY_PRICE_HEADER);
-        List<Room> rooms = roomController.getRoomsSortedByPrice();
+        List<RoomDto> rooms = roomController.getRoomsSortedByPrice();
         roomView.displayRooms(rooms);
     }
 }

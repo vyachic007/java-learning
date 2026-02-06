@@ -1,6 +1,7 @@
 package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
@@ -22,8 +23,8 @@ public class ChangeRoomStatusAction implements Action {
         consoleUI.print(Messages.ENTER_ROOM_NUMBER);
         String roomNumber = consoleUI.readLine();
         try {
-            Room room = roomController.findRoomByNumber(roomNumber);
-            if (room != null) {
+            RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
+            if (roomDto != null) {
                 consoleUI.print(Messages.CHOOSE_STATUS + "\n");
                 consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 1, consoleUI.translateRoomStatus(RoomStatus.AVAILABLE)) + "\n");
                 consoleUI.print(String.format(Messages.MENU_ITEM_FORMAT, 2, consoleUI.translateRoomStatus(RoomStatus.OCCUPIED)) + "\n");
@@ -49,7 +50,7 @@ public class ChangeRoomStatusAction implements Action {
                         consoleUI.displayErrorMessage(Messages.INVALID_STATUS);
                         return;
                 }
-                roomController.setRoomStatus(room.getId(), status);
+                roomController.setRoomStatus(roomDto.id(), status);
             } else {
                 consoleUI.displayErrorMessage(Messages.ROOM_NOT_FOUND);
             }

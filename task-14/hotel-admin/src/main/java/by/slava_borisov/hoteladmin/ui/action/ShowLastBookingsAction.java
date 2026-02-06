@@ -2,6 +2,7 @@ package by.slava_borisov.hoteladmin.ui.action;
 
 import by.slava_borisov.hoteladmin.controller.BookingController;
 import by.slava_borisov.hoteladmin.controller.RoomController;
+import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.ui.ConsoleUI;
 import by.slava_borisov.hoteladmin.util.Messages;
@@ -26,10 +27,10 @@ public class ShowLastBookingsAction extends BaseAction {
         String roomNumber = readLine();
 
         try {
-            Room room = roomController.findRoomByNumber(roomNumber);
+            RoomDto roomDto = roomController.findRoomByNumber(roomNumber);
 
-            if (room != null) {
-                bookingController.displayLastBookings(room.getId());
+            if (roomDto != null) {
+                bookingController.displayLastBookings(roomDto.id());
             } else {
                 displayErrorMessage(Messages.ROOM_NOT_FOUND);
             }
