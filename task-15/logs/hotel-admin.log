@@ -441,3 +441,88 @@ org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wron
 2026-02-11 19:49:34.658 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: получить все комнаты отсортированные по цене
 2026-02-11 19:49:34.665 [main] INFO  b.s.h.controller.RoomController - Комнаты отсортированные по цене успешно получены (0 комнат)
 2026-02-11 19:49:35.662 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 14 в MainMenu
+2026-02-11 20:05:39.037 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-02-11 20:05:39.053 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-02-11 20:05:39.054 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-02-11 20:05:44.656 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-02-11 20:05:44.657 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-02-11 20:05:44.714 [main] INFO  org.hibernate.orm.core - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-11 20:05:44.929 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using built-in connection pool (not intended for production use)
+2026-02-11 20:05:45.074 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-11 20:05:45.083 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/SENLA-11]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.0
+	Default catalog/schema: SENLA-11/public
+	Autocommit mode: false
+	Isolation level: READ_COMMITTED
+	JDBC fetch size: none
+	Pool: DriverManagerConnectionProvider
+	Minimum pool size: 1
+	Maximum pool size: 10
+2026-02-11 20:05:45.563 [main] INFO  org.hibernate.orm.core - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-11 20:05:45.590 [main] INFO  b.s.hoteladmin.db.HibernateUtil - SessionFactory успешно создана
+2026-02-11 20:05:45.779 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-02-11 20:05:50.980 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-02-11 20:05:50.981 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-02-11 20:05:50.992 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-02-11 20:05:55.155 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 11 в MainMenu
+2026-02-11 20:05:55.155 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по цене
+2026-02-11 20:05:55.181 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по цене успешно получены (0 услуг)
+2026-02-11 20:05:56.096 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 12 в MainMenu
+2026-02-11 20:05:56.097 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по категории
+2026-02-11 20:05:56.155 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по категории успешно получены (0 услуг)
+2026-02-11 20:05:57.054 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 13 в MainMenu
+2026-02-11 20:05:57.055 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: получить все комнаты отсортированные по цене
+2026-02-11 20:05:57.064 [main] INFO  b.s.h.controller.RoomController - Комнаты отсортированные по цене успешно получены (0 комнат)
+2026-02-11 20:05:57.917 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 14 в MainMenu
+2026-02-11 20:11:03.996 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-02-11 20:11:04.013 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-02-11 20:11:04.013 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-02-11 20:11:05.593 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-02-11 20:11:05.593 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-02-11 20:11:05.652 [main] INFO  org.hibernate.orm.core - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-11 20:11:05.864 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using built-in connection pool (not intended for production use)
+2026-02-11 20:11:06.013 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-11 20:11:06.021 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/SENLA-11]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.0
+	Default catalog/schema: SENLA-11/public
+	Autocommit mode: false
+	Isolation level: READ_COMMITTED
+	JDBC fetch size: none
+	Pool: DriverManagerConnectionProvider
+	Minimum pool size: 1
+	Maximum pool size: 10
+2026-02-11 20:11:06.504 [main] INFO  org.hibernate.orm.core - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-11 20:11:06.531 [main] INFO  b.s.hoteladmin.db.HibernateUtil - SessionFactory успешно создана
+2026-02-11 20:11:06.731 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-02-11 20:11:16.355 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 10 в MainMenu
+2026-02-11 20:11:16.356 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить все услуги
+2026-02-11 20:11:16.367 [main] INFO  b.s.h.controller.GuestController - Все услуги успешно получены (15 услуг)
+2026-02-11 20:11:18.454 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 11 в MainMenu
+2026-02-11 20:11:18.455 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по цене
+2026-02-11 20:11:18.492 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по цене успешно получены (15 услуг)
+2026-02-11 20:11:19.363 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 12 в MainMenu
+2026-02-11 20:11:19.364 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по категории
+2026-02-11 20:11:19.426 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по категории успешно получены (15 услуг)
+2026-02-11 20:11:20.266 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 13 в MainMenu
+2026-02-11 20:11:20.267 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: получить все комнаты отсортированные по цене
+2026-02-11 20:11:20.279 [main] INFO  b.s.h.controller.RoomController - Комнаты отсортированные по цене успешно получены (12 комнат)
+2026-02-11 20:11:21.144 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 14 в MainMenu
+2026-02-11 20:11:25.826 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 21 в MainMenu
+2026-02-11 20:11:40.668 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: добавление услуги Что-то  с ценой 2500.0 и категорией кое-что
+2026-02-11 20:11:40.704 [main] INFO  b.s.h.controller.GuestController - Услуга Что-то успешно добавлена
+2026-02-11 20:11:42.947 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 10 в MainMenu
+2026-02-11 20:11:42.948 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить все услуги
+2026-02-11 20:11:42.961 [main] INFO  b.s.h.controller.GuestController - Все услуги успешно получены (16 услуг)
+2026-02-11 20:11:57.391 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 22 в MainMenu
+2026-02-11 20:12:07.813 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: изменение цены услуги id=16, новая цена 9999.0
+2026-02-11 20:12:07.854 [main] INFO  b.s.h.controller.GuestController - Цена услуги id=16 успешно изменена на 9999.0
+2026-02-11 20:12:09.266 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 10 в MainMenu
+2026-02-11 20:12:09.267 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить все услуги
+2026-02-11 20:12:09.274 [main] INFO  b.s.h.controller.GuestController - Все услуги успешно получены (16 услуг)
+2026-02-11 20:12:23.247 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 0 в MainMenu
