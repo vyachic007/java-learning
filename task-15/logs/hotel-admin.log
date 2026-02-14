@@ -666,3 +666,37 @@ org.hibernate.tool.schema.spi.SchemaManagementException: Schema validation: wron
 2026-02-12 15:24:05.604 [main] INFO  org.hibernate.orm.core - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2026-02-12 15:24:05.629 [main] INFO  b.s.hoteladmin.db.HibernateUtil - SessionFactory успешно создана
 2026-02-12 15:24:05.819 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-02-14 21:34:28.627 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - ConsoleUI инициализирован
+2026-02-14 21:34:28.642 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Запуск приложения с главным меню: MainMenu
+2026-02-14 21:34:28.643 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Начало работы главного цикла меню
+2026-02-14 21:34:30.370 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 1 в MainMenu
+2026-02-14 21:34:30.371 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: вывести все комнаты, критерий сортировки BY_ID
+2026-02-14 21:34:30.423 [main] INFO  org.hibernate.orm.core - HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-14 21:34:30.622 [main] WARN  o.hibernate.orm.connections.pooling - HHH10001002: Using built-in connection pool (not intended for production use)
+2026-02-14 21:34:30.669 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-14 21:34:30.678 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [jdbc:postgresql://localhost:5432/SENLA-11]
+	Database driver: PostgreSQL JDBC Driver
+	Database dialect: PostgreSQLDialect
+	Database version: 18.0
+	Default catalog/schema: SENLA-11/public
+	Autocommit mode: false
+	Isolation level: READ_COMMITTED
+	JDBC fetch size: none
+	Pool: DriverManagerConnectionProvider
+	Minimum pool size: 1
+	Maximum pool size: 10
+2026-02-14 21:34:31.159 [main] INFO  org.hibernate.orm.core - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-14 21:34:31.182 [main] INFO  b.s.hoteladmin.db.HibernateUtil - SessionFactory успешно создана
+2026-02-14 21:34:31.380 [main] INFO  b.s.h.controller.RoomController - Комнаты успешно выведены и отсортированы по критерию BY_ID
+2026-02-14 21:34:34.127 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 11 в MainMenu
+2026-02-14 21:34:34.128 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по цене
+2026-02-14 21:34:34.162 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по цене успешно получены (16 услуг)
+2026-02-14 21:34:35.861 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 12 в MainMenu
+2026-02-14 21:34:35.862 [main] INFO  b.s.h.controller.GuestController - Начало обработки команды: получить услуги отсортированные по категории
+2026-02-14 21:34:35.923 [main] INFO  b.s.h.controller.GuestController - Услуги отсортированные по категории успешно получены (16 услуг)
+2026-02-14 21:34:36.855 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 13 в MainMenu
+2026-02-14 21:34:36.856 [main] INFO  b.s.h.controller.RoomController - Начало обработки команды: получить все комнаты отсортированные по цене
+2026-02-14 21:34:36.866 [main] INFO  b.s.h.controller.RoomController - Комнаты отсортированные по цене успешно получены (12 комнат)
+2026-02-14 21:34:37.743 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 14 в MainMenu
+2026-02-14 21:34:40.470 [main] INFO  b.s.hoteladmin.ui.ConsoleUI - Пользователь выбрал пункт меню: 0 в MainMenu
