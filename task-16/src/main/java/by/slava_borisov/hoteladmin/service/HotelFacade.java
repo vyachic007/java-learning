@@ -231,4 +231,11 @@ public class HotelFacade {
         return guestDao.findByPhone(phone)
                 .map(guestMapper::toDto);
     }
+
+    public List<BookingDto> viewRoomHistory(Long roomId, int limit) {
+        return queryManager.getLastBookings(roomId, limit)
+                .stream()
+                .map(bookingMapper::toDto)
+                .toList();
+    }
 }
