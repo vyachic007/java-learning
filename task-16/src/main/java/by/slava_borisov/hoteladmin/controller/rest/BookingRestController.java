@@ -5,6 +5,7 @@ import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,15 +18,17 @@ public class BookingRestController {
     private final HotelFacade hotelFacade;
 
     @PostMapping("/check-in")
-    public BookingDto checkIn(
+    public ResponseEntity<BookingDto> checkIn(
             @RequestBody CheckInRequest request
     ) {
-        return hotelFacade.checkIn(
+        BookingDto bookingDto = hotelFacade.checkIn(
                 request.guest(),
                 request.roomId(),
                 request.checkInDate(),
                 request.checkOutDate()
         );
+
+        return ResponseEntity.status(201).body(bookingDto);
     }
 
     @PostMapping("/check-out")

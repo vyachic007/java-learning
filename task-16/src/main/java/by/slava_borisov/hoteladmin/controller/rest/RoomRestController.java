@@ -8,6 +8,7 @@ import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.ui.SortCriteria.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -52,10 +53,11 @@ public class RoomRestController {
     }
 
     @PostMapping
-    public RoomDto addRoom(
+    public ResponseEntity<RoomDto> addRoom(
             @RequestBody RoomDto roomDto
     ) {
-        return hotelFacade.addRoom(roomDto);
+        RoomDto created = hotelFacade.addRoom(roomDto);
+        return ResponseEntity.status(201).body(created);
     }
 
     @PutMapping("/{id}/price")

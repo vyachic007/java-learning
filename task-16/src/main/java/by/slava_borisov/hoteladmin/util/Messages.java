@@ -2,8 +2,6 @@ package by.slava_borisov.hoteladmin.util;
 
 public final class Messages {
 
-    public static final String ROOM_NOT_FOUND_BY_NUMBER = "Комната с номером %s не найдена";
-
     private Messages() {
     }
 
@@ -27,12 +25,12 @@ public final class Messages {
     public static final String ROOM_NOT_FOUND_EXCEPTION = "Комната с номером %d не найдена.";
     public static final String ROOM_NOT_AVAILABLE_EXCEPTION = "Номер %d не доступен для заселения.";
     public static final String ROOM_ADDED = "Номер %s добавлен в систему%n";
-    public static final String DUPLICATE_ROOM_NUMBER = "Номер комнаты уже существует: %s";
     public static final String DUPLICATE_ROOM_NUMBER_EXCEPTION = "Номер %s уже существует.";
     public static final String ROOM_STATUS_CHANGE_DISABLED = "Изменение статуса номера отключено в настройках.";
     public static final String STATUS_CHANGED_SUCCESSFULLY = "Статус номера успешно изменён.";
     public static final String ROOM_PAYMENT = "Сумма к оплате: %.2f руб.";
     public static final String NOT_NEGATIVE_PRICE = "Ошибка: цена не может быть отрицательной";
+    public static final String ROOM_NOT_FOUND_BY_NUMBER = "Комната с номером %s не найдена";
 
     /// ROOM STATUS
     public static final String STATUS_UNKNOWN = "НЕИЗВЕСТНО";
@@ -47,8 +45,6 @@ public final class Messages {
     public static final String GUEST_OR_AMENITY_NOT_FOUND = "Гость или услуга не найдены%n";
 
 
-    /// AMENITY
-    public static final String AMENITY_NOT_FOUND = "Услуга не найдена: id=%d";
     public static final String AMENITY_NOT_FOUND_EXCEPTION = "Услуга с ID %d не найдена.";
     public static final String AMENITY_ADDED = "Услуга '%s' добавлена в систему%n";
     public static final String AMENITY_PRICE_CHANGED_SIMPLE = "Цена услуги с ID %d изменена на %.2f%n";
