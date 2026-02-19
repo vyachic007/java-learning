@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    public record ErrorResponse(LocalDateTime timestamp, int status, String message, String path) {}
+    public record ErrorResponse(LocalDateTime timestamp, int status, String message, String path) { }
 
     @ExceptionHandler(RoomNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleRoomNotFound(RoomNotFoundException ex, WebRequest request) {

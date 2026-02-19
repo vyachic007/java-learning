@@ -5,9 +5,15 @@ import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.dto.request.AddAmenityToGuestRequest;
 import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
-import by.slava_borisov.hoteladmin.ui.SortCriteria.SortCriteria;
+import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
