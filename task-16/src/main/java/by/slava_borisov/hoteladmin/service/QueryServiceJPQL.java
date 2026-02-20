@@ -63,32 +63,6 @@ public class QueryServiceJPQL implements QueryService {
     }
 
     @Override
-    public double calculateGuestPayment(Long guestId) {
-        Double amenitiesCost = session().createQuery("""
-                        SELECT COALESCE(SUM(u.amenity.price * u.quantity), 0.0)
-                        FROM AmenityUsage u
-                        WHERE u.booking.guest.id = :guestId
-                        """, Double.class)
-                .setParameter("guestId", guestId)
-                .getSingleResult();
-
-        Double roomCost = session().createQuery("""
-                        SELECT COALESCE(SUM(b.room.pricePerNight *
-                               FUNCTION('GREATEST', 0,
-                               FUNCTION('DATE_DIFF', 'DAY', b.checkInDate, CURRENT_DATE))), 0.0)
-                        FROM Booking b
-                        WHERE b.guest.id = :guestId
-                          AND b.checkInDate <= CURRENT_DATE
-                          AND b.checkOutDate > CURRENT_DATE
-                          AND b.actualCheckOutDate IS NULL
-                        """, Double.class)
-                .setParameter("guestId", guestId)
-                .getSingleResult();
-
-        return amenitiesCost + roomCost;
-    }
-
-    @Override
     public List<Room> getAllRoomsSortedByPrice() {
         return session().createQuery(
                 "SELECT r FROM Room r ORDER BY r.pricePerNight",

@@ -4717,3 +4717,20 @@ org.springframework.web.servlet.NoHandlerFoundException: No endpoint GET /hotela
 2026-02-20 20:13:08.330 [Catalina-utility-1] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
 2026-02-20 20:13:08.365 [Catalina-utility-1] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
 2026-02-20 20:13:08.400 [Catalina-utility-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 131 ms
+2026-02-20 20:29:30.565 [http-nio-8080-exec-509] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:30:30.587 [http-nio-8080-exec-510] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:30:41.049 [http-nio-8080-exec-516] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:30:48.831 [http-nio-8080-exec-513] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:30:49.773 [http-nio-8080-exec-508] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:31:24.385 [http-nio-8080-exec-509] WARN  o.s.web.servlet.PageNotFound - No mapping for POST /hoteladmin/api/bookings/price
+2026-02-20 20:40:50.463 [Catalina-utility-1] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization started
+2026-02-20 20:40:51.109 [Catalina-utility-1] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-20 20:40:51.152 [Catalina-utility-1] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-20 20:40:51.263 [Catalina-utility-1] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-20 20:40:52.405 [Catalina-utility-1] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-20 20:40:52.610 [Catalina-utility-1] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext initialized in 2147 ms
+2026-02-20 20:40:52.615 [Catalina-utility-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcher'
+2026-02-20 20:40:52.681 [Catalina-utility-1] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-20 20:40:52.691 [Catalina-utility-1] WARN  org.hibernate.orm.deprecation - HHH90000025: PostgreSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-20 20:40:52.732 [Catalina-utility-1] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-20 20:40:52.771 [Catalina-utility-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 156 ms

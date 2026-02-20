@@ -43,16 +43,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, ex.getMessage(), request);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAll(Exception ex, WebRequest request) {
-        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, Messages.DEFAULT_ERROR_MESSAGE, request);
-    }
-
     @ExceptionHandler(GuestNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleGuestNotFound(GuestNotFoundException ex, WebRequest request) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAll(Exception ex, WebRequest request) {
+        return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, Messages.DEFAULT_ERROR_MESSAGE, request);
+    }
 
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, WebRequest request) {
         ErrorResponse error = new ErrorResponse(

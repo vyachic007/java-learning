@@ -11,6 +11,7 @@ import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
 import by.slava_borisov.hoteladmin.dto.BookingDto;
+import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
 import by.slava_borisov.hoteladmin.exception.BookingNotFoundException;
 import by.slava_borisov.hoteladmin.exception.DuplicateRoomNumberException;
 import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -125,6 +127,18 @@ public class HotelFacade {
             throw new BookingNotFoundException(roomId);
         }
     }
+
+    @Transactional(readOnly = true)
+    public PriceResponse calculateRoomPrice(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+        Room room = roomDao.findById(roomId)
+                .orElseThrow(() -> new RoomNotFoundException(roomId));
+
+        long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
+        double total = room.getPricePerNight() * nights;
+
+        return new PriceResponse(total, room.getPricePerNight(), nights, room.getNumber());
+    }
+
 
     @Transactional
     public AmenityDto addAmenity(AmenityDto amenityDto) {

@@ -46,6 +46,7 @@ public final class Messages {
 
 
     public static final String AMENITY_NOT_FOUND_EXCEPTION = "Услуга с ID %d не найдена.";
+    public static final String POSTGRESQL_DRIVER_NOT_FOUND = "PostgreSQL драйвер не найден";
     public static final String AMENITY_ADDED = "Услуга '%s' добавлена в систему%n";
     public static final String AMENITY_PRICE_CHANGED_SIMPLE = "Цена услуги с ID %d изменена на %.2f%n";
     public static final String AMENITY_ADDED_TO_GUEST = "Услуга '%s' добавлена гостю %s. Стоимость: %.2f%n";
