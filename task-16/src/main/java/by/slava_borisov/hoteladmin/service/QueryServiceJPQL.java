@@ -4,7 +4,6 @@ import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.model.Room;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,13 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class QueryServiceJPQL implements QueryService {
 
     private final SessionFactory sessionFactory;
+
+    public QueryServiceJPQL(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     private Session session() {
         return sessionFactory.getCurrentSession();

@@ -29,8 +29,8 @@ import java.util.Optional;
 
 
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class BookingManager {
 
     private static final Logger log = LoggerFactory.getLogger(BookingManager.class);

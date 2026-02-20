@@ -7,6 +7,7 @@ import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -57,22 +58,24 @@ public class GuestRestController {
     }
 
     @PostMapping("/{id}/amenities")
-    public AmenityUsageDto addAmenityToGuest(
+    public ResponseEntity<AmenityUsageDto> addAmenityToGuest(
             @PathVariable("id") Long id,
             @RequestBody AddAmenityToGuestRequest request
     ) {
-        return hotelFacade.addAmenityToGuest(
+        AmenityUsageDto result = hotelFacade.addAmenityToGuest(
                 id,
                 request.amenityId(),
                 request.usageDate(),
                 request.quantity()
         );
+        return ResponseEntity.status(201).body(result);
     }
 
     private SortCriteria parseSortCriteria(String sort) {
-        if (sort == null) return SortCriteria.BY_NAME;
+        if (sort == null) return SortCriteria.BY_CHECK_OUT_DATE;
         return switch (sort.toLowerCase()) {
             case "date" -> SortCriteria.BY_CHECK_OUT_DATE;
+            case "id" -> SortCriteria.BY_ID;
             default -> SortCriteria.BY_NAME;
         };
     }

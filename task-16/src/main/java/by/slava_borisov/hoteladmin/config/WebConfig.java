@@ -6,6 +6,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("by.slava_borisov.hoteladmin.controller.rest")
+@ComponentScan("by.slava_borisov.hoteladmin")
 public class WebConfig {
 }

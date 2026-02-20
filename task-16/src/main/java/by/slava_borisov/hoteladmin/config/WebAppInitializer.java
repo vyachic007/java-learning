@@ -1,17 +1,16 @@
 package by.slava_borisov.hoteladmin.config;
 
-import org.jspecify.annotations.Nullable;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
-    protected Class<?> @Nullable [] getRootConfigClasses() {
+    protected Class<?>[] getRootConfigClasses() {
         return new Class[]{AppConfig.class};
     }
 
     @Override
-    protected Class<?> @Nullable [] getServletConfigClasses() {
+    protected Class<?>[] getServletConfigClasses() {
         return new Class[]{WebConfig.class};
     }
 

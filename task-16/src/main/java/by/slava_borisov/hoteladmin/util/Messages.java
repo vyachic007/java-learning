@@ -41,7 +41,7 @@ public final class Messages {
 
     /// GUEST
     public static final String GUEST_NOT_FOUND_EXCEPTION = "Гость с ID %d не найден.";
-    public static final String GUEST_PHONE_NOT_FOUND_EXCEPTION = "Гость с номером %s не найден.";
+    public static final String GUEST_PHONE_NOT_FOUND_EXCEPTION = "Гость с телефоном %s не найден.";
     public static final String GUEST_OR_AMENITY_NOT_FOUND = "Гость или услуга не найдены%n";
 
 

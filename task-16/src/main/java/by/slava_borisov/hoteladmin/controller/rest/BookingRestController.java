@@ -38,10 +38,9 @@ public class BookingRestController {
     }
 
     @PostMapping("/check-out")
-    public void checkOut(
-            @RequestBody CheckOutRequest request
-    ) {
+    public ResponseEntity<?> checkOut(@RequestBody CheckOutRequest request) {
         hotelFacade.checkOut(request.roomId());
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/rooms/{roomId}/bookings")
@@ -49,7 +48,8 @@ public class BookingRestController {
             @PathVariable Long roomId,
             @RequestParam(required = false) Integer limit
     ) {
-        int historyLimit = limit != null ? limit : 10;
+        int historyLimit = limit != null ? limit : 2;
+        System.out.println("🔍 getRoomBookings roomId=" + roomId + ", limit=" + historyLimit);
         return hotelFacade.viewRoomHistory(roomId, historyLimit);
     }
 }
