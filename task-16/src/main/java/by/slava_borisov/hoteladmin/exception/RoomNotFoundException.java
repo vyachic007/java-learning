@@ -9,6 +9,6 @@ public class RoomNotFoundException extends RuntimeException {
     }
 
     public RoomNotFoundException(String roomNumber) {
-        super(String.format(Messages.ROOM_NOT_FOUND_BY_NUMBER, roomNumber));
+        super(String.format(Messages.ROOM_NOT_FOUND_BY_NUMBER_EXCEPTION, roomNumber));
     }
 }

@@ -129,7 +129,10 @@ public class HotelFacade {
     }
 
     @Transactional(readOnly = true)
-    public PriceResponse calculateRoomPrice(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+    public PriceResponse calculateRoomPrice(Long roomId, String checkInDateStr, String checkOutDateStr) {
+        LocalDate checkIn = LocalDate.parse(checkInDateStr);
+        LocalDate checkOut = LocalDate.parse(checkOutDateStr);
+
         Room room = roomDao.findById(roomId)
                 .orElseThrow(() -> new RoomNotFoundException(roomId));
 
@@ -138,6 +141,7 @@ public class HotelFacade {
 
         return new PriceResponse(total, room.getPricePerNight(), nights, room.getNumber());
     }
+
 
 
     @Transactional
@@ -244,7 +248,6 @@ public class HotelFacade {
                 .map(bookingMapper::toDto)
                 .toList();
     }
-
 
     @Transactional(readOnly = true)
     public List<GuestDto> viewGuestsSortedBy(SortCriteria criteria) {

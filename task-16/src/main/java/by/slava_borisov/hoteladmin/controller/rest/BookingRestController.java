@@ -7,13 +7,14 @@ import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
 import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 public class BookingRestController {
 
     private final HotelFacade hotelFacade;
+    private static final Logger log = LoggerFactory.getLogger(BookingRestController.class);
 
     @PostMapping("/check-in")
     public ResponseEntity<BookingDto> checkIn(
@@ -32,13 +34,19 @@ public class BookingRestController {
                 request.checkInDate(),
                 request.checkOutDate()
         );
+        log.info("POST: checkIn | guestId={}, roomId={}, checkInDate={}, checkOutDate={}",
+                request.guest().id(), request.roomId(), request.checkInDate(), request.checkOutDate());
 
         return ResponseEntity.status(201).body(bookingDto);
     }
 
     @PostMapping("/check-out")
-    public ResponseEntity<?> checkOut(@RequestBody CheckOutRequest request) {
+    public ResponseEntity<?> checkOut(
+            @RequestBody CheckOutRequest request
+    ) {
         hotelFacade.checkOut(request.roomId());
+        log.info("POST: checkOut | roomId={}", request.roomId());
+
         return ResponseEntity.ok().build();
     }
 
@@ -47,10 +55,14 @@ public class BookingRestController {
     public ResponseEntity<PriceResponse> calculatePrice(
             @RequestBody PriceCalculationRequest request
     ) {
-        LocalDate checkIn = LocalDate.parse(request.checkInDate());
-        LocalDate checkOut = LocalDate.parse(request.checkOutDate());
+        PriceResponse price = hotelFacade.calculateRoomPrice(
+                request.roomId(),
+                request.checkInDate(),
+                request.checkOutDate()
+        );
+        log.info("POST: calculatePrice | roomId={}, pricePerNight{}, nights={}, totalPrice={}",
+                request.roomId(), price.pricePerNight(), price.nights(), price.totalPrice());
 
-        PriceResponse price = hotelFacade.calculateRoomPrice(request.roomId(), checkIn, checkOut);
         return ResponseEntity.ok(price);
     }
 }

@@ -6,6 +6,8 @@ import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +26,15 @@ import java.util.List;
 public class AmenityRestController {
 
     private final HotelFacade hotelFacade;
+    private static final Logger log = LoggerFactory.getLogger(AmenityRestController.class);
 
     @GetMapping
     public List<AmenityDto> getAllAmenities(
             @RequestParam(required = false) String sort
     ) {
         SortCriteria criteria = parseSortCriteria(sort);
+        log.info("GET: getAllAmenities | sortCriteria={}", criteria);
+
         return hotelFacade.getAmenitiesSortedBy(criteria);
     }
 
@@ -37,8 +42,13 @@ public class AmenityRestController {
     public AmenityDto getAmenityById(
             @PathVariable("id") Long id
     ) {
+        log.info("GET: getAmenityById | amenityId={}", id);
+
         return hotelFacade.findAmenityById(id)
-                .orElseThrow(() -> new AmenityNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Amenity not found: {}", id);
+                    return new AmenityNotFoundException(id);
+                });
     }
 
     @PostMapping
@@ -46,6 +56,9 @@ public class AmenityRestController {
             @RequestBody AmenityDto amenityDto
     ) {
         AmenityDto created = hotelFacade.addAmenity(amenityDto);
+        log.info("POST: addAmenity | id={}, name={}, price={}, category={}",
+                created.id(), created.name(), created.price(), created.category());
+
         return ResponseEntity.status(201).body(created);
     }
 
@@ -55,6 +68,9 @@ public class AmenityRestController {
             @RequestBody ChangePriceRequest request
     ) {
         hotelFacade.changeAmenityPrice(id, request.newPrice());
+        log.info("PUT: changeAmenityPrice | amenityId={}, newPrice={}",
+                id, request.newPrice());
+
         return ResponseEntity.ok().build();
     }
 

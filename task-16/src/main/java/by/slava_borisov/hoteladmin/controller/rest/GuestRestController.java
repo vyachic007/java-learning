@@ -7,6 +7,8 @@ import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,7 @@ import java.util.List;
 public class GuestRestController {
 
     private final HotelFacade hotelFacade;
+    private static final Logger log = LoggerFactory.getLogger(GuestRestController.class);
 
 
     @GetMapping
@@ -31,6 +34,8 @@ public class GuestRestController {
             @RequestParam(required = false) String sort
     ) {
         SortCriteria criteria = parseSortCriteria(sort);
+        log.info("GET: getAllGuests | sortCriteria={}", sort);
+
         return hotelFacade.viewGuestsSortedBy(criteria);
     }
 
@@ -38,22 +43,34 @@ public class GuestRestController {
     public GuestDto getGuestById(
             @PathVariable("id") Long id
     ) {
+        log.info("GET: getGuestById | guestId={}", id);
+
         return hotelFacade.findGuestById(id)
-                .orElseThrow(() -> new GuestNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Guest not found: {}", id);
+                    return new GuestNotFoundException(id);
+                });
     }
 
     @GetMapping("/by-phone")
     public GuestDto getGuestByPhone(
             @RequestParam String phone
     ) {
+        log.info("GET: getGuestByPhone | guestPhone={}", phone);
+
         return hotelFacade.findGuestByPhone(phone)
-                .orElseThrow(() -> new GuestNotFoundException(phone));
+                .orElseThrow(() -> {
+                    log.warn("Guest not found: {}", phone);
+                    return new GuestNotFoundException(phone);
+                });
     }
 
     @GetMapping("/{id}/amenities")
     public List<AmenityUsageDto> getGuestAmenities(
             @PathVariable Long id
     ) {
+        log.info("GET: getGuestAmenities | guestId={}", id);
+
         return hotelFacade.viewGuestAmenities(id);
     }
 
@@ -68,6 +85,9 @@ public class GuestRestController {
                 request.usageDate(),
                 request.quantity()
         );
+        log.info("POST: addAmenityToGuest | guestId={}, amenityId={}, quantity={}, usageDate={}",
+                id, request.amenityId(), request.quantity(), request.usageDate());
+
         return ResponseEntity.status(201).body(result);
     }
 
