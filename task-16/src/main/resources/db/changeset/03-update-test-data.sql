@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset vyacheslav_borisov:03-update-guests-phones-20260220
+--changeset vyacheslav_borisov:update-guests-phones
 UPDATE guests SET phone = '79112234567' WHERE full_name = 'Иван Иванов';
 UPDATE guests SET phone = '79127654321' WHERE full_name = 'Петр Петров';
 UPDATE guests SET phone = '79131122334' WHERE full_name = 'Мария Сидорова';

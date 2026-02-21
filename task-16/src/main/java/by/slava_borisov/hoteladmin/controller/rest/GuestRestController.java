@@ -47,7 +47,7 @@ public class GuestRestController {
 
         return hotelFacade.findGuestById(id)
                 .orElseThrow(() -> {
-                    log.warn("Guest not found: {}", id);
+                    log.warn("Guest not found: id={}", id);
                     return new GuestNotFoundException(id);
                 });
     }
@@ -60,7 +60,7 @@ public class GuestRestController {
 
         return hotelFacade.findGuestByPhone(phone)
                 .orElseThrow(() -> {
-                    log.warn("Guest not found: {}", phone);
+                    log.warn("Guest not found: phone={}", phone);
                     return new GuestNotFoundException(phone);
                 });
     }
