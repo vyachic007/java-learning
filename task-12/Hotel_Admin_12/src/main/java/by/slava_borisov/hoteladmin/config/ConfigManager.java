@@ -1,7 +1,7 @@
 package by.slava_borisov.hoteladmin.config;
 
 import by.slava_borisov.reflection.annotations.ConfigProperty;
-import by.slava_borisov.reflection.annotations.ConfigurationLoader;
+import by.slava_borisov.reflection.config.ConfigurationLoader;
 
 public final class ConfigManager {
 
