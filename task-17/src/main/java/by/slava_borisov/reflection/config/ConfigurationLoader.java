@@ -1,4 +1,7 @@
-package by.slava_borisov.reflection.annotations;
+package by.slava_borisov.reflection.config;
+
+import by.slava_borisov.reflection.annotations.ConfigProperty;
+import by.slava_borisov.reflection.annotations.PropertyType;
 
 import java.io.InputStream;
 import java.lang.reflect.Field;
