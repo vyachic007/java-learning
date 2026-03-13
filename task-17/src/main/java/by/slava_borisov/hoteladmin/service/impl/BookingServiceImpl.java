@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
                     return new RoomNotFoundException(roomId);
                 });
 
-        if (bookingDao.existsOverlapping(roomId, checkInDate, checkOutDate)) {
+        if (bookingDao.isOverlappingReservationExists(roomId, checkInDate, checkOutDate)) {
             log.error("Ошибка заселения для гостя {}: комната id={} занята на период {}-{}",
                     guest.getFullName(), roomId, checkInDate, checkOutDate);
             throw new RoomNotAvailableException(roomId);

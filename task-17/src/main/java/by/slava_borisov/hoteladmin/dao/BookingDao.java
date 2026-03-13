@@ -12,7 +12,7 @@ public interface BookingDao extends GenericDao<Booking, Long> {
 
     Optional<Booking> findActiveByGuestId(Long guestId, LocalDate date);
 
-    boolean existsOverlapping(Long roomId, LocalDate checkIn, LocalDate checkOut);
+    boolean isOverlappingReservationExists(Long roomId, LocalDate checkIn, LocalDate checkOut);
 
     void updateActualCheckOutDate(Long bookingId, LocalDate actualCheckOutDate);
 

@@ -64,7 +64,7 @@ public class BookingDaoImpl implements BookingDao {
     }
 
     @Override
-    public boolean existsOverlapping(Long roomId, LocalDate checkIn, LocalDate checkOut) {
+    public boolean isOverlappingReservationExists(Long roomId, LocalDate checkIn, LocalDate checkOut) {
         Long count = session().createQuery(
                         "SELECT COUNT(b) FROM Booking b " +
                                 "WHERE b.room.id = :roomId " +
