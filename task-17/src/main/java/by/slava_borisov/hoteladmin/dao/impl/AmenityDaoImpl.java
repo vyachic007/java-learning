@@ -79,4 +79,20 @@ public class AmenityDaoImpl implements AmenityDao {
         }
         return false;
     }
+
+    @Override
+    public List<Amenity> findAllSortedByPrice() {
+        return session().createQuery(
+                "SELECT a FROM Amenity a ORDER BY a.price",
+                Amenity.class
+        ).list();
+    }
+
+    @Override
+    public List<Amenity> findAllSortedByCategory() {
+        return session().createQuery(
+                "SELECT a FROM Amenity a ORDER BY a.category, a.name",
+                Amenity.class
+        ).list();
+    }
 }

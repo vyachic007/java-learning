@@ -115,4 +115,37 @@ public class RoomDaoImpl implements RoomDao {
         }
         return false;
     }
+
+    @Override
+    public int countAvailable() {
+        Long count = session().createQuery(
+                "SELECT COUNT(r) FROM Room r WHERE r.status = 'AVAILABLE'",
+                Long.class
+        ).getSingleResult();
+        return count.intValue();
+    }
+
+    @Override
+    public List<Room> findAllSortedByPrice() {
+        return session().createQuery(
+                "SELECT r FROM Room r ORDER BY r.pricePerNight",
+                Room.class
+        ).list();
+    }
+
+    @Override
+    public List<Room> findAllSortedByCapacity() {
+        return session().createQuery(
+                "SELECT r FROM Room r ORDER BY r.capacity",
+                Room.class
+        ).list();
+    }
+
+    @Override
+    public List<Room> findAllSortedByStars() {
+        return session().createQuery(
+                "SELECT r FROM Room r ORDER BY r.stars",
+                Room.class
+        ).list();
+    }
 }

@@ -3,7 +3,7 @@ package by.slava_borisov.hoteladmin.controller.rest;
 import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.dto.request.ChangePriceRequest;
 import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
-import by.slava_borisov.hoteladmin.service.HotelFacadeService;
+import by.slava_borisov.hoteladmin.service.AmenityService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AmenityRestController {
 
-    private final HotelFacadeService hotelFacadeService;
+    private final AmenityService amenityService;
 
     @GetMapping
     public List<AmenityDto> getAllAmenities(
@@ -34,7 +34,7 @@ public class AmenityRestController {
         SortCriteria criteria = parseSortCriteria(sort);
         log.info("GET: getAllAmenities | sortCriteria={}", criteria);
 
-        return hotelFacadeService.getAmenitiesSortedBy(criteria);
+        return amenityService.getAmenitiesSortedBy(criteria);
     }
 
     @GetMapping("/{id}")
@@ -43,7 +43,7 @@ public class AmenityRestController {
     ) {
         log.info("GET: getAmenityById | amenityId={}", id);
 
-        return hotelFacadeService.findAmenityById(id)
+        return amenityService.findAmenityById(id)
                 .orElseThrow(() -> {
                     log.warn("Amenity not found: {}", id);
                     return new AmenityNotFoundException(id);
@@ -54,7 +54,7 @@ public class AmenityRestController {
     public ResponseEntity<AmenityDto> addAmenity(
             @RequestBody AmenityDto amenityDto
     ) {
-        AmenityDto created = hotelFacadeService.addAmenity(amenityDto);
+        AmenityDto created = amenityService.addAmenity(amenityDto);
         log.info("POST: addAmenity | id={}, name={}, price={}, category={}",
                 created.id(), created.name(), created.price(), created.category());
 
@@ -66,13 +66,12 @@ public class AmenityRestController {
             @PathVariable Long id,
             @RequestBody ChangePriceRequest request
     ) {
-        hotelFacadeService.changeAmenityPrice(id, request.newPrice());
+        amenityService.changeAmenityPrice(id, request.newPrice());
         log.info("PUT: changeAmenityPrice | amenityId={}, newPrice={}",
                 id, request.newPrice());
 
         return ResponseEntity.ok().build();
     }
-
 
     private SortCriteria parseSortCriteria(String sort) {
         if (sort == null) return SortCriteria.BY_ID;

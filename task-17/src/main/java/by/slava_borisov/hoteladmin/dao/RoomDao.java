@@ -16,4 +16,12 @@ public interface RoomDao extends GenericDao<Room, Long> {
     void updateStatus(Long roomId, RoomStatus status);
 
     void updatePricePerNight(Long roomId, double newPrice);
+
+    int countAvailable();
+
+    List<Room> findAllSortedByPrice();
+
+    List<Room> findAllSortedByCapacity();
+
+    List<Room> findAllSortedByStars();
 }

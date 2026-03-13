@@ -70,4 +70,39 @@ public class GuestDaoImpl implements GuestDao {
         }
         return false;
     }
+
+    @Override
+    public int countCurrentGuests() {
+        Long count = session().createQuery("""
+                    SELECT COUNT(DISTINCT b.guest.id)
+                    FROM Booking b
+                    WHERE b.checkInDate <= CURRENT_DATE
+                      AND b.checkOutDate > CURRENT_DATE
+                      AND b.actualCheckOutDate IS NULL""",
+                Long.class
+        ).getSingleResult();
+
+        return count.intValue();
+    }
+
+    @Override
+    public List<Guest> findAllSortedByName() {
+        return session().createQuery(
+                "SELECT g FROM Guest g ORDER BY g.fullName",
+                Guest.class
+        ).list();
+    }
+
+    @Override
+    public List<Guest> findCurrentGuestsSortedByCheckOut() {
+        return session().createQuery("""
+                    SELECT g FROM Guest g
+                    JOIN g.bookingHistory b
+                    WHERE b.checkInDate <= CURRENT_DATE
+                      AND b.checkOutDate > CURRENT_DATE
+                      AND b.actualCheckOutDate IS NULL
+                    ORDER BY b.checkOutDate, g.fullName
+                    """, Guest.class)
+                .list();
+    }
 }

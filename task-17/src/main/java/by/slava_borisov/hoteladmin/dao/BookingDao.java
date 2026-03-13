@@ -4,6 +4,7 @@ import by.slava_borisov.hoteladmin.model.Booking;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.List;
 
 public interface BookingDao extends GenericDao<Booking, Long> {
 
@@ -14,4 +15,6 @@ public interface BookingDao extends GenericDao<Booking, Long> {
     boolean existsOverlapping(Long roomId, LocalDate checkIn, LocalDate checkOut);
 
     void updateActualCheckOutDate(Long bookingId, LocalDate actualCheckOutDate);
+
+    List<Booking> findLastByRoomId(Long roomId, int limit);
 }

@@ -1,127 +1,77 @@
 package by.slava_borisov.hoteladmin.service.impl;
 
+import by.slava_borisov.hoteladmin.dao.RoomDao;
+import by.slava_borisov.hoteladmin.dao.GuestDao;
+import by.slava_borisov.hoteladmin.dao.BookingDao;
+import by.slava_borisov.hoteladmin.dao.AmenityDao;
 import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.service.QueryService;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class QueryServiceImpl implements QueryService {
 
-    private final SessionFactory sessionFactory;
-
-    public QueryServiceImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    private Session session() {
-        return sessionFactory.getCurrentSession();
-    }
+    private final RoomDao roomDao;
+    private final GuestDao guestDao;
+    private final BookingDao bookingDao;
+    private final AmenityDao amenityDao;
 
     @Override
     public int countAvailableRooms() {
-        Long count = session().createQuery(
-                "SELECT COUNT(r) FROM Room r WHERE r.status = 'AVAILABLE'",
-                Long.class
-        ).getSingleResult();
-
-        return count.intValue();
+        return roomDao.countAvailable();
     }
 
     @Override
     public int countCurrentGuests() {
-        Long count = session().createQuery("""
-                        SELECT COUNT(DISTINCT b.guest.id)
-                        FROM Booking b
-                        WHERE b.checkInDate <= CURRENT_DATE
-                          AND b.checkOutDate > CURRENT_DATE
-                          AND b.actualCheckOutDate IS NULL""",
-                Long.class
-        ).getSingleResult();
-
-        return count.intValue();
+        return guestDao.countCurrentGuests();
     }
 
     @Override
     public List<Booking> getLastBookings(Long roomId, int limit) {
-        return session().createQuery("""
-                        SELECT b FROM Booking b
-                        WHERE b.room.id = :roomId
-                        ORDER BY b.checkInDate DESC
-                        """, Booking.class)
-                .setParameter("roomId", roomId)
-                .setMaxResults(Math.max(0, limit))
-                .list();
+        return bookingDao.findLastByRoomId(roomId, limit);
     }
 
     @Override
     public List<Room> getAllRoomsSortedByPrice() {
-        return session().createQuery(
-                "SELECT r FROM Room r ORDER BY r.pricePerNight",
-                Room.class
-        ).list();
+        return roomDao.findAllSortedByPrice();
     }
 
     @Override
     public List<Room> getAllRoomsSortedByCapacity() {
-        return session().createQuery(
-                "SELECT r FROM Room r ORDER BY r.capacity",
-                Room.class
-        ).list();
+        return roomDao.findAllSortedByCapacity();
     }
 
     @Override
     public List<Room> getAllRoomsSortedByStars() {
-        return session().createQuery(
-                "SELECT r FROM Room r ORDER BY r.stars",
-                Room.class
-        ).list();
+        return roomDao.findAllSortedByStars();
     }
 
     @Override
     public List<Guest> getGuestsSortedByName() {
-        return session().createQuery(
-                "SELECT g FROM Guest g ORDER BY g.fullName",
-                Guest.class
-        ).list();
+        return guestDao.findAllSortedByName();
     }
 
     @Override
     public List<Guest> getGuestsSortedByCheckOutDate() {
-        return session().createQuery("""
-                        SELECT g FROM Guest g
-                        JOIN g.bookingHistory b
-                        WHERE b.checkInDate <= CURRENT_DATE
-                          AND b.checkOutDate > CURRENT_DATE
-                          AND b.actualCheckOutDate IS NULL
-                        ORDER BY b.checkOutDate, g.fullName
-                        """, Guest.class)
-                .list();
+        return guestDao.findCurrentGuestsSortedByCheckOut();
     }
-
 
     @Override
     public List<Amenity> getAmenitiesSortedByPrice() {
-        return session().createQuery(
-                "SELECT a FROM Amenity a ORDER BY a.price",
-                Amenity.class
-        ).list();
+        return amenityDao.findAllSortedByPrice();
     }
 
     @Override
     public List<Amenity> getAmenitiesSortedByCategory() {
-        return session().createQuery(
-                "SELECT a FROM Amenity a ORDER BY a.category, a.name",
-                Amenity.class
-        ).list();
+        return amenityDao.findAllSortedByCategory();
     }
 }

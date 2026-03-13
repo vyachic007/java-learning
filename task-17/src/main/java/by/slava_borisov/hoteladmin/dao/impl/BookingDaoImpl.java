@@ -133,4 +133,16 @@ public class BookingDaoImpl implements BookingDao {
         }
         return false;
     }
+
+    @Override
+    public List<Booking> findLastByRoomId(Long roomId, int limit) {
+        return session().createQuery("""
+                    SELECT b FROM Booking b
+                    WHERE b.room.id = :roomId
+                    ORDER BY b.checkInDate DESC
+                    """, Booking.class)
+                .setParameter("roomId", roomId)
+                .setMaxResults(Math.max(0, limit))
+                .list();
+    }
 }
