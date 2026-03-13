@@ -19,8 +19,7 @@ import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
 import by.slava_borisov.hoteladmin.exception.RoomNotAvailableException;
 import by.slava_borisov.hoteladmin.util.Messages;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +27,11 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class BookingManager {
-
-    private static final Logger log = LoggerFactory.getLogger(BookingManager.class);
 
     private final RoomDao roomDao;
     private final BookingDao bookingDao;

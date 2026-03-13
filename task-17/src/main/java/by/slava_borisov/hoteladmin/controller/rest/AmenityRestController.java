@@ -6,8 +6,7 @@ import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/amenities")
 @RequiredArgsConstructor
 public class AmenityRestController {
 
     private final HotelFacade hotelFacade;
-    private static final Logger log = LoggerFactory.getLogger(AmenityRestController.class);
 
     @GetMapping
     public List<AmenityDto> getAllAmenities(

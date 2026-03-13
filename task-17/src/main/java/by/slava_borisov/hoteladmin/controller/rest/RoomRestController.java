@@ -7,8 +7,7 @@ import by.slava_borisov.hoteladmin.dto.request.RoomStatusRequest;
 import by.slava_borisov.hoteladmin.service.HotelFacade;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,13 +23,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
 public class RoomRestController {
 
     private final HotelFacade hotelFacade;
-    private static final Logger log = LoggerFactory.getLogger(RoomRestController.class);
 
     @GetMapping
     public List<RoomDto> getAllRooms(
