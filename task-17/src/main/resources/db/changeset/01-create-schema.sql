@@ -9,6 +9,7 @@ CREATE TABLE rooms (
  capacity INT NOT NULL,
  stars INT NOT NULL
 );
+--rollback DROP TABLE rooms;
 
 --changeset vyacheslav_borisov:create_guests_table
 CREATE TABLE guests (
@@ -16,6 +17,7 @@ CREATE TABLE guests (
  full_name VARCHAR(255) NOT NULL,
  phone VARCHAR(20) NOT NULL
 );
+--rollback DROP TABLE guests;
 
 --changeset vyacheslav_borisov:create_amenities_table
 CREATE TABLE amenities (
@@ -24,6 +26,7 @@ CREATE TABLE amenities (
  price DOUBLE PRECISION NOT NULL,
  category VARCHAR(100) NOT NULL
 );
+--rollback DROP TABLE amenities;
 
 --changeset vyacheslav_borisov:create_bookings_table
 CREATE TABLE bookings (
@@ -36,6 +39,7 @@ CREATE TABLE bookings (
     FOREIGN KEY (guest_id) REFERENCES guests(id),
     FOREIGN KEY (room_id) REFERENCES rooms(id)
 );
+--rollback DROP TABLE bookings;
 
 --changeset vyacheslav_borisov:create_amenity_usages_table
 CREATE TABLE amenity_usages (
@@ -47,3 +51,4 @@ CREATE TABLE amenity_usages (
     FOREIGN KEY (amenity_id) REFERENCES amenities(id),
     FOREIGN KEY (booking_id) REFERENCES bookings(id)
 );
+--rollback DROP TABLE amenity_usages;
