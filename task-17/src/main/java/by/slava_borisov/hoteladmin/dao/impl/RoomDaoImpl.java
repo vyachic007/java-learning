@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.dao.hibernate;
+package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.RoomDao;
 import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class RoomDaoHibernate implements RoomDao {
+public class RoomDaoImpl implements RoomDao {
 
     private final SessionFactory sessionFactory;
 

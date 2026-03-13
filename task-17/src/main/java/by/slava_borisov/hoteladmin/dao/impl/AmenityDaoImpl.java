@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.dao.hibernate;
+package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.AmenityDao;
 import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class AmenityDaoHibernate implements AmenityDao {
+public class AmenityDaoImpl implements AmenityDao {
 
     private final SessionFactory sessionFactory;
 

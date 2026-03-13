@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.dao.hibernate;
+package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.AmenityUsageDao;
 import by.slava_borisov.hoteladmin.model.AmenityUsage;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class AmenityUsageDaoHibernate implements AmenityUsageDao {
+public class AmenityUsageDaoImpl implements AmenityUsageDao {
 
     private final SessionFactory sessionFactory;
 

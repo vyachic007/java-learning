@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.dao.hibernate;
+package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.model.Guest;
@@ -15,7 +15,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class GuestDaoHibernate implements GuestDao {
+public class GuestDaoImpl implements GuestDao {
 
     private final SessionFactory sessionFactory;
 

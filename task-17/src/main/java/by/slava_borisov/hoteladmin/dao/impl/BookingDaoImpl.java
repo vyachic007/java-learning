@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.dao.hibernate;
+package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.BookingDao;
 import by.slava_borisov.hoteladmin.exception.BookingNotFoundException;
@@ -18,7 +18,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class BookingDaoHibernate implements BookingDao {
+public class BookingDaoImpl implements BookingDao {
 
     private final SessionFactory sessionFactory;
 
