@@ -1,10 +1,12 @@
 package by.slava_borisov.hoteladmin.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Getter
 public class ConfigManager {
 
     @Value("${allow.room.status.change}")
@@ -21,25 +23,4 @@ public class ConfigManager {
 
     @Value("${db.password}")
     private String dbPassword;
-
-
-    public String getDbUrl() {
-        return dbUrl;
-    }
-
-    public String getDbUser() {
-        return dbUser;
-    }
-
-    public String getDbPassword() {
-        return dbPassword;
-    }
-
-    public int getGuestHistoryLimit() {
-        return guestHistoryLimit;
-    }
-
-    public boolean isAllowRoomStatusChange() {
-        return allowRoomStatusChange;
-    }
 }
