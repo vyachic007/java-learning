@@ -12,7 +12,6 @@ import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
 import by.slava_borisov.hoteladmin.dto.BookingDto;
 import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
-import by.slava_borisov.hoteladmin.exception.BookingNotFoundException;
 import by.slava_borisov.hoteladmin.exception.DuplicateRoomNumberException;
 import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
 import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
@@ -42,9 +41,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class HotelFacade {
+public class HotelFacadeService {
 
-    private final BookingManager bookingManager;
+    private final BookingService bookingService;
     private final QueryService queryManager;
     private final ConfigManager configManager;
     private final RoomDao roomDao;
@@ -115,17 +114,14 @@ public class HotelFacade {
     @Transactional
     public BookingDto checkIn(GuestDto guestDto, Long roomId, LocalDate checkIn, LocalDate checkOut) {
         Guest guest = guestMapper.toEntity(guestDto);
-        Booking booking = bookingManager.checkIn(guest, roomId, checkIn, checkOut);
+        Booking booking = bookingService.checkIn(guest, roomId, checkIn, checkOut);
         return bookingMapper.toDto(booking);
     }
 
 
     @Transactional
     public void checkOut(Long roomId) {
-        Optional<Booking> activeBooking = bookingDao.findActiveByRoomId(roomId, LocalDate.now());
-        if (activeBooking.isEmpty()) {
-            throw new BookingNotFoundException(roomId);
-        }
+        bookingService.checkOut(roomId);
     }
 
     @Transactional(readOnly = true)
@@ -175,7 +171,7 @@ public class HotelFacade {
 
     @Transactional
     public AmenityUsageDto addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity) {
-        AmenityUsage usage = bookingManager.addAmenityToGuest(guestId, amenityId, usageDate, quantity);
+        AmenityUsage usage = bookingService.addAmenityToGuest(guestId, amenityId, usageDate, quantity);
         return amenityUsageMapper.toDto(usage);
     }
 

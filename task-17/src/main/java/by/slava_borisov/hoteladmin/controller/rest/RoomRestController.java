@@ -4,7 +4,7 @@ import by.slava_borisov.hoteladmin.dto.BookingDto;
 import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.dto.request.ChangePriceRequest;
 import by.slava_borisov.hoteladmin.dto.request.RoomStatusRequest;
-import by.slava_borisov.hoteladmin.service.HotelFacade;
+import by.slava_borisov.hoteladmin.service.HotelFacadeService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RoomRestController {
 
-    private final HotelFacade hotelFacade;
+    private final HotelFacadeService hotelFacadeService;
 
     @GetMapping
     public List<RoomDto> getAllRooms(
@@ -38,7 +38,7 @@ public class RoomRestController {
         SortCriteria criteria = getSortCriteria(sort);
         log.info("GET: getAllRooms | sortCriteria={}", sort);
 
-        return hotelFacade.viewAllRoomsSortedBy(criteria);
+        return hotelFacadeService.viewAllRoomsSortedBy(criteria);
     }
 
     @GetMapping("/{id}")
@@ -47,7 +47,7 @@ public class RoomRestController {
     ) {
         log.info("GET: getRoomById | roomId={}", id);
 
-        return hotelFacade.findRoomById(id)
+        return hotelFacadeService.findRoomById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -58,7 +58,7 @@ public class RoomRestController {
     ) {
         log.info("GET: getRoomByNumber | roomNumber={}", number);
 
-        return hotelFacade.findRoomByNumber(number)
+        return hotelFacadeService.findRoomByNumber(number)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -69,14 +69,14 @@ public class RoomRestController {
     ) {
         log.info("GET: getAvailableRooms | date={}", date);
 
-        return hotelFacade.getAvailableRoomsOnDate(date);
+        return hotelFacadeService.getAvailableRoomsOnDate(date);
     }
 
     @PostMapping
     public ResponseEntity<RoomDto> addRoom(
             @RequestBody RoomDto roomDto
     ) {
-        RoomDto created = hotelFacade.addRoom(roomDto);
+        RoomDto created = hotelFacadeService.addRoom(roomDto);
         log.info("POST: addRoom | roomId={}, number={}, pricePerNight={}, status={}, capacity={}, stars={}",
                 created.id(), created.number(), created.pricePerNight(), created.status(), created.capacity(), created.stars());
 
@@ -90,7 +90,7 @@ public class RoomRestController {
     ) {
         log.info("PUT: changeRoomPrice | roomId={}, newPrice={}", id, request.newPrice());
 
-        hotelFacade.changeRoomPrice(id, request.newPrice());
+        hotelFacadeService.changeRoomPrice(id, request.newPrice());
         return ResponseEntity.ok().build();
     }
 
@@ -101,7 +101,7 @@ public class RoomRestController {
     ) {
         log.info("PUT: changeRoomStatus | roomId={}, newStatus={}", id, request.status());
 
-        hotelFacade.setRoomStatus(id, request.status());
+        hotelFacadeService.setRoomStatus(id, request.status());
         return ResponseEntity.ok().build();
     }
 
@@ -109,7 +109,7 @@ public class RoomRestController {
     public List<BookingDto> getRoomBookings(@PathVariable Long id) {
         log.info("GET: getRoomBookings | roomId={}", id);
 
-        return hotelFacade.viewRoomHistory(id);
+        return hotelFacadeService.viewRoomHistory(id);
     }
 
     private SortCriteria getSortCriteria(String sort) {

@@ -1,9 +1,10 @@
-package by.slava_borisov.hoteladmin.service;
+package by.slava_borisov.hoteladmin.service.impl;
 
 import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.model.Room;
+import by.slava_borisov.hoteladmin.service.QueryService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Service;
@@ -14,11 +15,11 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class QueryServiceJPQL implements QueryService {
+public class QueryServiceImpl implements QueryService {
 
     private final SessionFactory sessionFactory;
 
-    public QueryServiceJPQL(SessionFactory sessionFactory) {
+    public QueryServiceImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 

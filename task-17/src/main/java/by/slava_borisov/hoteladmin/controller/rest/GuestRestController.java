@@ -4,7 +4,7 @@ import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
 import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.dto.request.AddAmenityToGuestRequest;
 import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
-import by.slava_borisov.hoteladmin.service.HotelFacade;
+import by.slava_borisov.hoteladmin.service.HotelFacadeService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GuestRestController {
 
-    private final HotelFacade hotelFacade;
+    private final HotelFacadeService hotelFacadeService;
 
     @GetMapping
     public List<GuestDto> getAllGuests(
@@ -34,7 +34,7 @@ public class GuestRestController {
         SortCriteria criteria = parseSortCriteria(sort);
         log.info("GET: getAllGuests | sortCriteria={}", sort);
 
-        return hotelFacade.viewGuestsSortedBy(criteria);
+        return hotelFacadeService.viewGuestsSortedBy(criteria);
     }
 
     @GetMapping("/{id}")
@@ -43,7 +43,7 @@ public class GuestRestController {
     ) {
         log.info("GET: getGuestById | guestId={}", id);
 
-        return hotelFacade.findGuestById(id)
+        return hotelFacadeService.findGuestById(id)
                 .orElseThrow(() -> {
                     log.warn("Guest not found: id={}", id);
                     return new GuestNotFoundException(id);
@@ -56,7 +56,7 @@ public class GuestRestController {
     ) {
         log.info("GET: getGuestByPhone | guestPhone={}", phone);
 
-        return hotelFacade.findGuestByPhone(phone)
+        return hotelFacadeService.findGuestByPhone(phone)
                 .orElseThrow(() -> {
                     log.warn("Guest not found: phone={}", phone);
                     return new GuestNotFoundException(phone);
@@ -69,7 +69,7 @@ public class GuestRestController {
     ) {
         log.info("GET: getGuestAmenities | guestId={}", id);
 
-        return hotelFacade.viewGuestAmenities(id);
+        return hotelFacadeService.viewGuestAmenities(id);
     }
 
     @PostMapping("/{id}/amenities")
@@ -77,7 +77,7 @@ public class GuestRestController {
             @PathVariable("id") Long id,
             @RequestBody AddAmenityToGuestRequest request
     ) {
-        AmenityUsageDto result = hotelFacade.addAmenityToGuest(
+        AmenityUsageDto result = hotelFacadeService.addAmenityToGuest(
                 id,
                 request.amenityId(),
                 request.usageDate(),

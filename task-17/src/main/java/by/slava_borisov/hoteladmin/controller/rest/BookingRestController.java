@@ -5,7 +5,7 @@ import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
 import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
-import by.slava_borisov.hoteladmin.service.HotelFacade;
+import by.slava_borisov.hoteladmin.service.HotelFacadeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequiredArgsConstructor
 public class BookingRestController {
 
-    private final HotelFacade hotelFacade;
+    private final HotelFacadeService hotelFacadeService;
 
     @PostMapping("/check-in")
     public ResponseEntity<BookingDto> checkIn(
             @RequestBody CheckInRequest request
     ) {
-        BookingDto bookingDto = hotelFacade.checkIn(
+        BookingDto bookingDto = hotelFacadeService.checkIn(
                 request.guest(),
                 request.roomId(),
                 request.checkInDate(),
@@ -42,7 +42,7 @@ public class BookingRestController {
     public ResponseEntity<?> checkOut(
             @RequestBody CheckOutRequest request
     ) {
-        hotelFacade.checkOut(request.roomId());
+        hotelFacadeService.checkOut(request.roomId());
         log.info("POST: checkOut | roomId={}", request.roomId());
 
         return ResponseEntity.ok().build();
@@ -53,7 +53,7 @@ public class BookingRestController {
     public ResponseEntity<PriceResponse> calculatePrice(
             @RequestBody PriceCalculationRequest request
     ) {
-        PriceResponse price = hotelFacade.calculateRoomPrice(
+        PriceResponse price = hotelFacadeService.calculateRoomPrice(
                 request.roomId(),
                 request.checkInDate(),
                 request.checkOutDate()

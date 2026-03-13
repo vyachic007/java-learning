@@ -1,7 +1,7 @@
 package by.slava_borisov.hoteladmin.controller.rest;
 
 import by.slava_borisov.hoteladmin.dto.RoomDto;
-import by.slava_borisov.hoteladmin.service.HotelFacade;
+import by.slava_borisov.hoteladmin.service.HotelFacadeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,11 +19,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReportRestController {
 
-    private final HotelFacade hotelFacade;
+    private final HotelFacadeService hotelFacadeService;
 
     @GetMapping("/available-rooms-count")
     public int getAvailableRoomsCount() {
-        int count =  hotelFacade.getAvailableRoomsCount();
+        int count =  hotelFacadeService.getAvailableRoomsCount();
         log.info("GET: getAvailableRoomsCount | count={}", count);
 
         return count;
@@ -31,7 +31,7 @@ public class ReportRestController {
 
     @GetMapping("/guests-count")
     public int getGuestsCount() {
-        int count =  hotelFacade.getGuestsCount();
+        int count =  hotelFacadeService.getGuestsCount();
         log.info("GET: getGuestsCount | count={}", count);
 
         return count;
@@ -43,6 +43,6 @@ public class ReportRestController {
     ) {
         log.info("GET: getAvailableRooms | date={}", date);
 
-        return hotelFacade.getAvailableRoomsOnDate(date);
+        return hotelFacadeService.getAvailableRoomsOnDate(date);
     }
 }
