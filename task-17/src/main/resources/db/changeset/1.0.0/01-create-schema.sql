@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset vyacheslav_borisov:create_rooms_table
+--changeset vyacheslav_borisov:1.0.0-create_rooms_table
 CREATE TABLE rooms (
  id BIGSERIAL PRIMARY KEY,
  number VARCHAR(50) NOT NULL UNIQUE,
@@ -11,7 +11,7 @@ CREATE TABLE rooms (
 );
 --rollback DROP TABLE rooms;
 
---changeset vyacheslav_borisov:create_guests_table
+--changeset vyacheslav_borisov:1.0.0-create_guests_table
 CREATE TABLE guests (
  id BIGSERIAL PRIMARY KEY,
  full_name VARCHAR(255) NOT NULL,
@@ -19,7 +19,7 @@ CREATE TABLE guests (
 );
 --rollback DROP TABLE guests;
 
---changeset vyacheslav_borisov:create_amenities_table
+--changeset vyacheslav_borisov:1.0.0-create_amenities_table
 CREATE TABLE amenities (
  id BIGSERIAL PRIMARY KEY,
  name VARCHAR(255) NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE amenities (
 );
 --rollback DROP TABLE amenities;
 
---changeset vyacheslav_borisov:create_bookings_table
+--changeset vyacheslav_borisov:1.0.0-create_bookings_table
 CREATE TABLE bookings (
  id BIGSERIAL PRIMARY KEY,
  guest_id BIGINT NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE bookings (
 );
 --rollback DROP TABLE bookings;
 
---changeset vyacheslav_borisov:create_amenity_usages_table
+--changeset vyacheslav_borisov:1.0.0-create_amenity_usages_table
 CREATE TABLE amenity_usages (
  id BIGSERIAL PRIMARY KEY,
  amenity_id BIGINT NOT NULL,

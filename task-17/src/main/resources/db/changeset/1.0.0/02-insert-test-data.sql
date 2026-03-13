@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset vyacheslav_borisov:insert_rooms
+--changeset vyacheslav_borisov:1.0.0-insert_rooms
 INSERT INTO rooms (number, price_per_night, status, capacity, stars)
     VALUES
         ('101', 3500.00, 'AVAILABLE', 2, 3),
@@ -17,7 +17,7 @@ INSERT INTO rooms (number, price_per_night, status, capacity, stars)
         ('402', 6500.00, 'AVAILABLE', 5, 5);
 --rollback DELETE FROM rooms WHERE number IN ('101','102','103','104','201','202','203','204','301','302','401','402');
 
---changeset vyacheslav_borisov:insert_guests
+--changeset vyacheslav_borisov:1.0.0-insert_guests
 INSERT INTO guests (full_name, phone)
     VALUES
         ('Иван Иванов', '+752912345670'),
@@ -33,7 +33,7 @@ INSERT INTO guests (full_name, phone)
 --rollback     '+754411122338','+754422233844','+754455567677','+754466677888'
 --rollback );
 
---changeset vyacheslav_borisov:insert_amenities
+--changeset vyacheslav_borisov:1.0.0-insert_amenities
 INSERT INTO amenities (name, price, category)
     VALUES
          ('Завтрак', 25.00, 'Питание'),
@@ -57,7 +57,7 @@ INSERT INTO amenities (name, price, category)
 --rollback     'Wi-Fi', 'Мини-бар', 'Химчистка', 'Консьерж'
 --rollback );
 
---changeset vyacheslav_borisov:insert_bookings
+--changeset vyacheslav_borisov:1.0.0-insert_bookings
 INSERT INTO bookings (guest_id, room_id, check_in_date, check_out_date, actual_check_out_date)
     VALUES
         (1, 1, '2026-02-10', '2026-02-15', NULL),
@@ -68,7 +68,7 @@ INSERT INTO bookings (guest_id, room_id, check_in_date, check_out_date, actual_c
         (6, 10, '2026-02-13', '2026-02-20', NULL);
 --rollback DELETE FROM bookings WHERE id IN (1,2,3,4,5,6);
 
---changeset vyacheslav_borisov:insert_amenity_usages
+--changeset vyacheslav_borisov:1.0.0-insert_amenity_usages
 INSERT INTO amenity_usages (amenity_id, booking_id, usage_date, quantity)
     VALUES
         (1, 1, '2026-02-11', 2),
