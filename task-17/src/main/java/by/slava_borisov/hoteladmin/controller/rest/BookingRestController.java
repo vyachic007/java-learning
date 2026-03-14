@@ -54,7 +54,7 @@ public class BookingRestController {
     public ResponseEntity<?> checkOut(
             @RequestBody CheckOutRequest request
     ) {
-        bookingService.CheckOut(request.roomId());
+        bookingService.checkOut(request.roomId());
         log.info("POST: isCheckOut | roomId={}", request.roomId());
 
         return ResponseEntity.ok().build();
