@@ -75,7 +75,7 @@ public class BookingDaoImpl implements BookingDao {
                 )
                 .setParameter("roomId", roomId)
                 .setParameter("checkIn", checkIn)
-                .setParameter("checkOut", checkOut)
+                .setParameter("isCheckOut", checkOut)
                 .getSingleResult();
 
         return count > 0;

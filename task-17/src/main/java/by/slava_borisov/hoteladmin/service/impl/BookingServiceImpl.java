@@ -105,13 +105,11 @@ public class BookingServiceImpl implements BookingService {
         roomDao.updateStatus(roomId, RoomStatus.OCCUPIED);
     }
 
-    public Boolean checkOut(Long roomId) {
+    public void CheckOut(Long roomId) {
         log.info("Начало выселения из комнаты id={}", roomId);
 
         Booking activeBooking = findActiveBookingForCheckOut(roomId);
         releaseRoom(roomId, activeBooking);
-
-        return true;
     }
 
 

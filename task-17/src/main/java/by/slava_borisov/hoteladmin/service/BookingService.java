@@ -10,7 +10,7 @@ public interface BookingService {
 
     Booking checkIn(Guest guest, Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
 
-    Boolean checkOut(Long roomId);
+    void CheckOut(Long roomId);
 
     AmenityUsage addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity);
 }
