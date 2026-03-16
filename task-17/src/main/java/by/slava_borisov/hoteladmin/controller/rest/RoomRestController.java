@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,7 @@ public class RoomRestController {
     private final BookingMapper bookingMapper;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<RoomDto> getAllRooms(
             @RequestParam(required = false) String sort
     ) {
@@ -46,6 +48,7 @@ public class RoomRestController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<RoomDto> getRoomById(
             @PathVariable Long id
     ) {
@@ -57,6 +60,7 @@ public class RoomRestController {
     }
 
     @GetMapping("/by-number")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<RoomDto> getRoomByNumber(
             @RequestParam String number
     ) {
@@ -68,6 +72,7 @@ public class RoomRestController {
     }
 
     @GetMapping("/available")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<RoomDto> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
@@ -77,6 +82,7 @@ public class RoomRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomDto> addRoom(
             @RequestBody RoomDto roomDto
     ) {
@@ -88,6 +94,7 @@ public class RoomRestController {
     }
 
     @PutMapping("/{id}/price")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> changeRoomPrice(
             @PathVariable Long id,
             @RequestBody ChangePriceRequest request
@@ -99,6 +106,7 @@ public class RoomRestController {
     }
 
     @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> changeRoomStatus(
             @PathVariable Long id,
             @RequestBody RoomStatusRequest request
@@ -110,6 +118,7 @@ public class RoomRestController {
     }
 
     @GetMapping("/{id}/history")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<BookingDto> getRoomBookings(
             @PathVariable Long id
     ) {

@@ -6,6 +6,7 @@ import by.slava_borisov.hoteladmin.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ public class ReportRestController {
     private final QueryService queryService;
 
     @GetMapping("/available-rooms-count")
+    @PreAuthorize("hasRole('ADMIN')")
     public int getAvailableRoomsCount() {
         int count =  queryService.countAvailableRooms();
         log.info("GET: getAvailableRoomsCount | count={}", count);
@@ -32,6 +34,7 @@ public class ReportRestController {
     }
 
     @GetMapping("/guests-count")
+    @PreAuthorize("hasRole('ADMIN')")
     public int getGuestsCount() {
         int count =  queryService.countCurrentGuests();
         log.info("GET: getGuestsCount | count={}", count);
@@ -40,6 +43,7 @@ public class ReportRestController {
     }
 
     @GetMapping("/available-rooms")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<RoomDto> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {

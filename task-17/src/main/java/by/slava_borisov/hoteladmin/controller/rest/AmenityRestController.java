@@ -8,6 +8,7 @@ import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ public class AmenityRestController {
     private final AmenityService amenityService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<AmenityDto> getAllAmenities(
             @RequestParam(required = false) String sort
     ) {
@@ -38,6 +40,7 @@ public class AmenityRestController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public AmenityDto getAmenityById(
             @PathVariable("id") Long id
     ) {
@@ -51,6 +54,7 @@ public class AmenityRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AmenityDto> addAmenity(
             @RequestBody AmenityDto amenityDto
     ) {
@@ -62,6 +66,7 @@ public class AmenityRestController {
     }
 
     @PutMapping("/{id}/price")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> changeAmenityPrice(
             @PathVariable Long id,
             @RequestBody ChangePriceRequest request

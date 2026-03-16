@@ -14,6 +14,7 @@ import by.slava_borisov.hoteladmin.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class BookingRestController {
     private final BookingMapper bookingMapper;
 
     @PostMapping("/check-in")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BookingDto> checkIn(
             @RequestBody CheckInRequest request
     ) {
@@ -51,6 +53,7 @@ public class BookingRestController {
     }
 
     @PostMapping("/check-out")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> checkOut(
             @RequestBody CheckOutRequest request
     ) {
@@ -61,6 +64,7 @@ public class BookingRestController {
     }
 
     @PostMapping("/calculate-price")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<PriceResponse> calculatePrice(
             @RequestBody PriceCalculationRequest request
     ) {

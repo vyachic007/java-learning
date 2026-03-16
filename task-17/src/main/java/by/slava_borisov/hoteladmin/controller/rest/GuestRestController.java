@@ -10,6 +10,7 @@ import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +31,7 @@ public class GuestRestController {
     private final AmenityService amenityService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public List<GuestDto> getAllGuests(
             @RequestParam(required = false) String sort
     ) {
@@ -40,6 +42,7 @@ public class GuestRestController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public GuestDto getGuestById(
             @PathVariable("id") Long id
     ) {
@@ -53,6 +56,7 @@ public class GuestRestController {
     }
 
     @GetMapping("/by-phone")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public GuestDto getGuestByPhone(
             @RequestParam String phone
     ) {
@@ -66,6 +70,7 @@ public class GuestRestController {
     }
 
     @GetMapping("/{id}/amenities")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<AmenityUsageDto> getGuestAmenities(
             @PathVariable Long id
     ) {
@@ -75,6 +80,7 @@ public class GuestRestController {
     }
 
     @PostMapping("/{id}/amenities")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AmenityUsageDto> addAmenityToGuest(
             @PathVariable("id") Long id,
             @RequestBody AddAmenityToGuestRequest request
