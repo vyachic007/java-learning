@@ -2,7 +2,6 @@ package by.slava_borisov.hoteladmin.controller.rest;
 
 import by.slava_borisov.hoteladmin.dto.request.LoginRequest;
 import by.slava_borisov.hoteladmin.dto.response.LoginResponse;
-import by.slava_borisov.hoteladmin.model.User;
 import by.slava_borisov.hoteladmin.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
