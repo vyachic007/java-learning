@@ -12,7 +12,7 @@ databaseChangeLog:
       file: db/changeset/1.0.2/04-create-users-table.sql
       relativeToChangelogFile: false
   - include:
-      file: db/changeset/1.0.1/05-insert-test-users.sql
+      file: db/changeset/1.0.2/05-insert-test-users.sql
       relativeToChangelogFile: false
 
 

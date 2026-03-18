@@ -1,18 +1,16 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
     container_name: hotel-postgres
     restart: always
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=hoteldb
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: hoteldb
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
     networks:
       - hotel-network
 
@@ -28,14 +26,11 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/hoteldb
       DB_USER: admin
       DB_PASSWORD: admin
-      ALLOW_ROOM_STATUS_CHANGE: "true"
-      GUEST_HISTORY_LIMIT: "2"
     networks:
       - hotel-network
 
 volumes:
   postgres_data:
-    name: hotel-postgres-data
 
 networks:
   hotel-network:

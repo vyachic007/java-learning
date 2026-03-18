@@ -4,6 +4,9 @@ import by.slava_borisov.hoteladmin.dto.response.ErrorResponse;
 import by.slava_borisov.hoteladmin.util.Messages;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -46,6 +49,21 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GuestNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleGuestNotFound(GuestNotFoundException ex, WebRequest request) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, WebRequest request) {
+        return buildResponse(HttpStatus.FORBIDDEN, Messages.ACCESS_DENIED_MESSAGE, request);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex, WebRequest request) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, Messages.BAD_CREDENTIALS_MESSAGE, request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthException(AuthenticationException ex, WebRequest request) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, Messages.AUTHENTICATION_FAILED_MESSAGE, request);
     }
 
     @ExceptionHandler(Exception.class)

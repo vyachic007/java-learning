@@ -1,6 +1,7 @@
 package by.slava_borisov.hoteladmin.service;
 
 import by.slava_borisov.hoteladmin.dao.UserDao;
+import by.slava_borisov.hoteladmin.util.Messages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,8 +19,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userDao.findByUsername(username)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found: " + username)
-                );
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format(Messages.USER_NOT_FOUND, username)
+                ));
     }
 }

@@ -131,6 +131,7 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
+    @Transactional(readOnly = true)
     public PriceResponse calculateRoomPrice(Long roomId, String checkInDateStr, String checkOutDateStr) {
         log.info("Расчет стоимости проживания: комната id={}, даты {}-{}",
                 roomId, checkInDateStr, checkOutDateStr);

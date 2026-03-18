@@ -68,14 +68,20 @@ public class BookingRestController {
     public ResponseEntity<PriceResponse> calculatePrice(
             @RequestBody PriceCalculationRequest request
     ) {
-        PriceResponse price = roomService.calculateRoomPrice(
-                request.roomId(),
-                request.checkInDate(),
-                request.checkOutDate()
-        );
-        log.info("POST: calculatePrice | roomId={}, pricePerNight={}, nights={}, totalPrice={}",
-                request.roomId(), price.pricePerNight(), price.nights(), price.totalPrice());
+        log.info("Calculating price for roomId={}, dates={} - {}",
+                request.roomId(), request.checkInDate(), request.checkOutDate());
 
-        return ResponseEntity.ok(price);
+        try {
+            PriceResponse price = roomService.calculateRoomPrice(
+                    request.roomId(),
+                    request.checkInDate(),
+                    request.checkOutDate()
+            );
+            log.info("Price calculated successfully: {}", price);
+            return ResponseEntity.ok(price);
+        } catch (Exception e) {
+            log.error("Error calculating price: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 }
