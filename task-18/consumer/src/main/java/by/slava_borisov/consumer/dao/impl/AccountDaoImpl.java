@@ -2,40 +2,35 @@ package by.slava_borisov.consumer.dao.impl;
 
 import by.slava_borisov.consumer.dao.AccountDao;
 import by.slava_borisov.consumer.model.Account;
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
 public class AccountDaoImpl implements AccountDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
-    public void createTableIfNotExist() {
-        String sql = """
-                CREATE TABLE IF NOT EXISTS transfers (
-                                id VARCHAR(36) PRIMARY KEY,
-                                from_account_id BIGINT NOT NULL,
-                                to_account_id BIGINT NOT NULL,
-                                amount DECIMAL(19,2) NOT NULL,
-                                status VARCHAR(20) NOT NULL
-                            )
-                """;
-
-        jdbcTemplate.execute(sql);
+    public Optional<Account> findById(Long accountId) {
+        Account account = entityManager.find(Account.class, accountId);
+        return Optional.ofNullable(account);
     }
 
     @Override
-    public Account findById(Long accountId) {
-        return null;
-    }
-
-    @Override
+    @Transactional
     public void updateBalance(Long accountId, BigDecimal newBalance) {
-
+        Query query = entityManager.createQuery(
+                "UPDATE Account a SET a.balance = :newBalance WHERE a.id = :accountId"
+        );
+        query.setParameter("newBalance", newBalance);
+        query.setParameter("accountId", accountId);
+        query.executeUpdate();
     }
 }
