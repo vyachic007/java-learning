@@ -25,7 +25,7 @@ public class AccountDaoImpl implements AccountDao {
     @Override
     public void createTablesIfNotExist() {
         String createAccount = """
-                CREATE TABLE IF NOT EXIST accounts (
+                CREATE TABLE IF NOT EXISTS accounts (
                     id BIGSERIAL PRIMARY KEY,
                     balance DECIMAL(19,2) NOT NULL
                 )
