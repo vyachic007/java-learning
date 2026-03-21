@@ -27,8 +27,6 @@ public class AccountDataInitializer {
     public void init() {
         log.info("Запуск инициализации данных счетов");
 
-        accountDao.createTablesIfNotExist();
-
         if (accountDao.isEmpty()) {
             log.info("В базе данных не найдено счетов. Генерируем 1000 счетов...");
             generateAndSaveAccounts();

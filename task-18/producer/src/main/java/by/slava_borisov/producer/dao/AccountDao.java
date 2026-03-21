@@ -7,8 +7,6 @@ import java.util.Map;
 
 public interface AccountDao {
 
-    void createTablesIfNotExist();
-
     boolean isEmpty();
 
     void saveAll(List<Account> accounts);
