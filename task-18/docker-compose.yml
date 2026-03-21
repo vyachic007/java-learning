@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15
@@ -9,7 +7,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5435:5432"
     networks:
       - bank-network
     healthcheck:
@@ -28,6 +26,11 @@ services:
       - "2181:2181"
     networks:
       - bank-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   kafka1:
     image: confluentinc/cp-kafka:7.5.0
@@ -39,53 +42,31 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
     networks:
       - bank-network
-
-  kafka2:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka2
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    ports:
-      - "9093:9092"
-    networks:
-      - bank-network
-
-  kafka3:
-    image: confluentinc/cp-kafka:7.5.0
-    container_name: kafka3
-    depends_on:
-      - zookeeper
-    environment:
-      KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
-    ports:
-      - "9094:9092"
-    networks:
-      - bank-network
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   kafka-init:
     image: confluentinc/cp-kafka:7.5.0
     depends_on:
-      - kafka1
-      - kafka2
-      - kafka3
+      kafka1:
+        condition: service_healthy
     entrypoint: ["/bin/sh", "-c"]
     command: |
+      echo "Waiting for Kafka brokers to be ready..."
       sleep 10
       kafka-topics --bootstrap-server kafka1:9092 --create --if-not-exists \
-        --topic transfers --partitions 3 --replication-factor 3 \
-        --config min.insync.replicas=2 --config retention.ms=300000
+        --topic transfers --partitions 1 --replication-factor 1 \
+        --config retention.ms=300000
+      echo "Topic transfers created successfully"
     networks:
       - bank-network
 
@@ -99,17 +80,42 @@ services:
     networks:
       - bank-network
 
-  consumer:
+  consumer-1:
     build: ./consumer
+    container_name: consumer-1
     depends_on:
       postgres:
         condition: service_healthy
       kafka-init:
         condition: service_completed_successfully
     environment:
-      SPRING_KAFKA_CONSUMER_GROUP_ID: bank-group
-    deploy:
-      replicas: 3
+      - KAFKA_GROUP_ID=bank-group-1
+    networks:
+      - bank-network
+
+  consumer-2:
+    build: ./consumer
+    container_name: consumer-2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      - KAFKA_GROUP_ID=bank-group-2
+    networks:
+      - bank-network
+
+  consumer-3:
+    build: ./consumer
+    container_name: consumer-3
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka-init:
+        condition: service_completed_successfully
+    environment:
+      - KAFKA_GROUP_ID=bank-group-3
     networks:
       - bank-network
 

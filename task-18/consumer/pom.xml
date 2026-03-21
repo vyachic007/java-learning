@@ -75,9 +75,15 @@
         </dependency>
 
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.9</version>
+        </dependency>
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.11</version>
+            <version>1.4.14</version>
         </dependency>
 
         <dependency>
@@ -98,8 +104,6 @@
             <version>3.1.0</version>
         </dependency>
     </dependencies>
-
-
 
     <build>
         <plugins>

@@ -9,9 +9,10 @@ public class ProducerApp {
 
         System.out.println("Продюсер запущен. Генерация 5 сообщений в секунду...");
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Продюсер останавливается...");
-            context.close();
-        }));
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

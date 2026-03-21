@@ -9,9 +9,10 @@ public class ConsumerApp {
 
         System.out.println("Consumer запущен. Ожидание сообщений...");
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            System.out.println("Consumer останавливается...");
-            context.close();
-        }));
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }
