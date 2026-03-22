@@ -5,8 +5,8 @@ import by.slava_borisov.consumer.model.Account;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     public void updateBalance(Long accountId, BigDecimal newBalance) {
         Query query = entityManager.createQuery(
                 "UPDATE Account a SET a.balance = :newBalance WHERE a.id = :accountId"

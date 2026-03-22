@@ -5,8 +5,8 @@ import by.slava_borisov.consumer.model.Transfer;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class TransferDaoImpl implements TransferDao {
@@ -15,7 +15,7 @@ public class TransferDaoImpl implements TransferDao {
     private EntityManager entityManager;
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     public void save(Transfer transfer) {
         entityManager.persist(transfer);
     }

@@ -5,8 +5,8 @@ import by.slava_borisov.producer.model.Account;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ public class AccountDaoImpl implements AccountDao {
     }
 
     @Override
-    @Transactional
+    @Transactional("transactionManager")
     public void saveAll(List<Account> accounts) {
         for (Account account : accounts) {
             entityManager.persist(account);
