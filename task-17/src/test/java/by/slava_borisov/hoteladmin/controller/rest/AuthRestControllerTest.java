@@ -6,7 +6,10 @@ import by.slava_borisov.hoteladmin.security.JwtUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,25 +25,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(MockitoExtension.class)
 class AuthRestControllerTest {
 
     private MockMvc mockMvc;
+
+    @Mock
     private AuthenticationManager authenticationManager;
+
+    @Mock
     private JwtUtils jwtUtils;
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        authenticationManager = Mockito.mock(AuthenticationManager.class);
-        jwtUtils = Mockito.mock(JwtUtils.class);
         objectMapper = new ObjectMapper();
-
         AuthRestController controller = new AuthRestController(authenticationManager, jwtUtils);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
+
 
     @Test
     void login() throws Exception {

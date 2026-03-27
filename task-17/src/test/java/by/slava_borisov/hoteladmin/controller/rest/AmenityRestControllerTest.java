@@ -9,7 +9,10 @@ import by.slava_borisov.hoteladmin.service.AmenityService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -27,18 +30,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@ExtendWith(MockitoExtension.class)
 class AmenityRestControllerTest {
 
     private MockMvc mockMvc;
+
+    @Mock
     private AmenityService amenityService;
+
+    @Mock
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
-        amenityService = Mockito.mock(AmenityService.class);
         objectMapper = new ObjectMapper();
-
         AmenityRestController controller = new AmenityRestController(amenityService);
 
         mockMvc = MockMvcBuilders.standaloneSetup(controller)
