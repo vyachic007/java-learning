@@ -38,7 +38,6 @@ class AmenityRestControllerTest {
     @Mock
     private AmenityService amenityService;
 
-    @Mock
     private ObjectMapper objectMapper;
 
     @BeforeEach
@@ -70,6 +69,8 @@ class AmenityRestControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Спа"))
                 .andExpect(jsonPath("$[1].price").value(50.0))
                 .andExpect(jsonPath("$[1].category").value("Услуга"));
+
+        verify(amenityService).getAmenitiesSortedBy(any());
     }
 
     @Test
@@ -83,6 +84,8 @@ class AmenityRestControllerTest {
                 .andExpect(jsonPath("$.name").value("Завтрак"))
                 .andExpect(jsonPath("$.price").value(20.0))
                 .andExpect(jsonPath("$.category").value("Еда"));
+
+        verify(amenityService).findAmenityById(1L);
     }
 
     @Test
@@ -100,6 +103,8 @@ class AmenityRestControllerTest {
                 .andExpect(jsonPath("$.name").value("Завтрак"))
                 .andExpect(jsonPath("$.price").value(20.0))
                 .andExpect(jsonPath("$.category").value("Еда"));
+
+        verify(amenityService).addAmenity(any(AmenityDto.class));
     }
 
     @Test
