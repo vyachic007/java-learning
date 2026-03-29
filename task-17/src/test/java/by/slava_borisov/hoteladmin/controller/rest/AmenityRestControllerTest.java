@@ -145,4 +145,30 @@ class AmenityRestControllerTest {
 
         verify(amenityService).changeAmenityPrice(999L, 99.0);
     }
+
+    @Test
+    void getAllAmenitiesShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        when(amenityService.getAmenitiesSortedBy(any()))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/api/amenities"))
+                .andExpect(status().isInternalServerError());
+
+        verify(amenityService).getAmenitiesSortedBy(any());
+    }
+
+    @Test
+    void addAmenityShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        AmenityDto request = new AmenityDto(null, "Завтрак", 20.0, "Еда");
+
+        when(amenityService.addAmenity(any(AmenityDto.class)))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(post("/api/amenities")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError());
+
+        verify(amenityService).addAmenity(any(AmenityDto.class));
+    }
 }
