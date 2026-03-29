@@ -341,4 +341,15 @@ class RoomServiceImplTest {
         assertThrows(NullPointerException.class,
                 () -> roomService.viewAllRoomsSortedBy(null));
     }
+
+    @Test
+    void getAvailableRoomsOnDateShouldThrowExceptionWhenDaoFails() {
+        LocalDate date = LocalDate.of(2026, 3, 26);
+
+        when(roomDao.findAvailableOnDate(date)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> roomService.getAvailableRoomsOnDate(date));
+
+        verify(roomDao).findAvailableOnDate(date);
+    }
 }
