@@ -15,8 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -166,9 +165,8 @@ class GuestServiceImplTest {
     }
 
     @Test
-    void viewGuestsSortedByShouldReturnEmptyListForUnknownCriteria() {
-        List<GuestDto> result = guestService.viewGuestsSortedBy(null);
-
-        assertTrue(result.isEmpty());
+    void viewGuestsSortedByShouldThrowExceptionWhenCriteriaIsNull() {
+        assertThrows(NullPointerException.class,
+                () -> guestService.viewGuestsSortedBy(null));
     }
 }
