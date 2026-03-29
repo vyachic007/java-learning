@@ -311,4 +311,15 @@ class GuestRestControllerTest {
 
         verify(guestService).findGuestByPhone("0000000000");
     }
+
+    @Test
+    void getAllGuestsShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        when(guestService.viewGuestsSortedBy(any()))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/api/guests"))
+                .andExpect(status().isInternalServerError());
+
+        verify(guestService).viewGuestsSortedBy(any());
+    }
 }
