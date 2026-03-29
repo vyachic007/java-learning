@@ -16,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -185,6 +184,96 @@ class QueryServiceImplTest {
         assertEquals(2, result.size());
         assertSame(amenity1, result.get(0));
         assertSame(amenity2, result.get(1));
+        verify(amenityDao).findAllSortedByCategory();
+    }
+
+    @Test
+    void countAvailableRoomsShouldThrowExceptionWhenDaoFails() {
+        when(roomDao.countAvailable()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.countAvailableRooms());
+
+        verify(roomDao).countAvailable();
+    }
+
+    @Test
+    void countCurrentGuestsShouldThrowExceptionWhenDaoFails() {
+        when(guestDao.countCurrentGuests()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.countCurrentGuests());
+
+        verify(guestDao).countCurrentGuests();
+    }
+
+    @Test
+    void getLastBookingsShouldThrowExceptionWhenDaoFails() {
+        when(bookingDao.findLastByRoomId(1L, 10)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getLastBookings(1L, 10));
+
+        verify(bookingDao).findLastByRoomId(1L, 10);
+    }
+
+    @Test
+    void getAllRoomsSortedByPriceShouldThrowExceptionWhenDaoFails() {
+        when(roomDao.findAllSortedByPrice()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getAllRoomsSortedByPrice());
+
+        verify(roomDao).findAllSortedByPrice();
+    }
+
+    @Test
+    void getAllRoomsSortedByCapacityShouldThrowExceptionWhenDaoFails() {
+        when(roomDao.findAllSortedByCapacity()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getAllRoomsSortedByCapacity());
+
+        verify(roomDao).findAllSortedByCapacity();
+    }
+
+    @Test
+    void getAllRoomsSortedByStarsShouldThrowExceptionWhenDaoFails() {
+        when(roomDao.findAllSortedByStars()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getAllRoomsSortedByStars());
+
+        verify(roomDao).findAllSortedByStars();
+    }
+
+    @Test
+    void getGuestsSortedByNameShouldThrowExceptionWhenDaoFails() {
+        when(guestDao.findAllSortedByName()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getGuestsSortedByName());
+
+        verify(guestDao).findAllSortedByName();
+    }
+
+    @Test
+    void getGuestsSortedByCheckOutDateShouldThrowExceptionWhenDaoFails() {
+        when(guestDao.findCurrentGuestsSortedByCheckOut()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getGuestsSortedByCheckOutDate());
+
+        verify(guestDao).findCurrentGuestsSortedByCheckOut();
+    }
+
+    @Test
+    void getAmenitiesSortedByPriceShouldThrowExceptionWhenDaoFails() {
+        when(amenityDao.findAllSortedByPrice()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getAmenitiesSortedByPrice());
+
+        verify(amenityDao).findAllSortedByPrice();
+    }
+
+    @Test
+    void getAmenitiesSortedByCategoryShouldThrowExceptionWhenDaoFails() {
+        when(amenityDao.findAllSortedByCategory()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> queryService.getAmenitiesSortedByCategory());
+
         verify(amenityDao).findAllSortedByCategory();
     }
 }
