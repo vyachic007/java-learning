@@ -273,4 +273,59 @@ class AmenityServiceImplTest {
 
         verify(bookingDao).findActiveByGuestId(1L, LocalDate.now());
     }
+
+    @Test
+    void addAmenityShouldThrowExceptionWhenDaoFails() {
+        AmenityDto request = new AmenityDto(null, "Завтрак", 20.0, "Еда");
+        Amenity amenity = new Amenity();
+
+        when(amenityMapper.toEntity(request)).thenReturn(amenity);
+        when(amenityDao.create(amenity)).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> amenityService.addAmenity(request));
+
+        verify(amenityMapper).toEntity(request);
+        verify(amenityDao).create(amenity);
+    }
+
+    @Test
+    void getAllAmenitiesShouldThrowExceptionWhenDaoFails() {
+        when(amenityDao.findAll()).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () -> amenityService.getAllAmenities());
+
+        verify(amenityDao).findAll();
+    }
+
+    @Test
+    void getAmenitiesSortedByShouldThrowExceptionWhenCriteriaIsNull() {
+        assertThrows(NullPointerException.class,
+                () -> amenityService.getAmenitiesSortedBy(null));
+    }
+
+    @Test
+    void addAmenityToGuestShouldThrowExceptionWhenBookingServiceFails() {
+        when(bookingService.addAmenityToGuest(
+                1L,
+                10L,
+                LocalDate.of(2026, 3, 26),
+                2
+        )).thenThrow(new RuntimeException());
+
+        assertThrows(RuntimeException.class, () ->
+                amenityService.addAmenityToGuest(
+                        1L,
+                        10L,
+                        LocalDate.of(2026, 3, 26),
+                        2
+                )
+        );
+
+        verify(bookingService).addAmenityToGuest(
+                1L,
+                10L,
+                LocalDate.of(2026, 3, 26),
+                2
+        );
+    }
 }
