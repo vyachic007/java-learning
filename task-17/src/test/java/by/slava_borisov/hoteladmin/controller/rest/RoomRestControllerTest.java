@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -262,5 +261,84 @@ class RoomRestControllerTest {
         verify(queryService).getLastBookings(1L, 10);
         verify(bookingMapper).toDto(booking1);
         verify(bookingMapper).toDto(booking2);
+    }
+
+    @Test
+    void getAllRoomsShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        when(roomService.viewAllRoomsSortedBy(any()))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/api/rooms"))
+                .andExpect(status().isInternalServerError());
+
+        verify(roomService).viewAllRoomsSortedBy(any());
+    }
+
+    @Test
+    void getAvailableRoomsShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        when(roomService.getAvailableRoomsOnDate(LocalDate.of(2026, 3, 26)))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/api/rooms/available")
+                        .param("date", "2026-03-26"))
+                .andExpect(status().isInternalServerError());
+
+        verify(roomService).getAvailableRoomsOnDate(LocalDate.of(2026, 3, 26));
+    }
+
+    @Test
+    void addRoomShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        RoomDto request = new RoomDto(null, "101", 100.0, RoomStatusDto.AVAILABLE, 2, 4);
+
+        when(roomService.addRoom(any(RoomDto.class)))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(post("/api/rooms")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError());
+
+        verify(roomService).addRoom(any(RoomDto.class));
+    }
+
+    @Test
+    void changeRoomPriceShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        ChangePriceRequest request = new ChangePriceRequest(150.0);
+
+        org.mockito.Mockito.doThrow(new RuntimeException())
+                .when(roomService).changeRoomPrice(1L, 150.0);
+
+        mockMvc.perform(put("/api/rooms/1/price")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError());
+
+        verify(roomService).changeRoomPrice(1L, 150.0);
+    }
+
+    @Test
+    void changeRoomStatusShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        RoomStatusRequest request = new RoomStatusRequest(RoomStatus.OCCUPIED);
+
+        org.mockito.Mockito.doThrow(new RuntimeException())
+                .when(roomService).setRoomStatus(1L, RoomStatus.OCCUPIED);
+
+        mockMvc.perform(put("/api/rooms/1/status")
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isInternalServerError());
+
+        verify(roomService).setRoomStatus(1L, RoomStatus.OCCUPIED);
+    }
+
+    @Test
+    void getRoomBookingsShouldReturnInternalServerErrorWhenServiceThrowsException() throws Exception {
+        when(queryService.getLastBookings(1L, 10))
+                .thenThrow(new RuntimeException());
+
+        mockMvc.perform(get("/api/rooms/1/history"))
+                .andExpect(status().isInternalServerError());
+
+        verify(queryService).getLastBookings(1L, 10);
     }
 }
