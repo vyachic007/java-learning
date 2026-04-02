@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     @Transactional
-    public void changeAmenityPrice(Long amenityId, double newPrice) {
+    public void changeAmenityPrice(Long amenityId, BigDecimal newPrice) {
         log.info("Изменение цены услуги id={}, новая цена={}", amenityId, newPrice);
         if (amenityDao.findById(amenityId).isEmpty()) {
             log.error("Услуга с id={} не найдена", amenityId);

@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -104,7 +105,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional
-    public void changeRoomPrice(Long roomId, double newPrice) {
+    public void changeRoomPrice(Long roomId, BigDecimal newPrice) {
         log.info("Изменение цены комнаты id={}, новая цена={}", roomId, newPrice);
 
         if (roomDao.findById(roomId).isEmpty()) {
@@ -141,7 +142,7 @@ public class RoomServiceImpl implements RoomService {
                 });
 
         long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
-        double total = room.getPricePerNight() * nights;
+        BigDecimal total = room.getPricePerNight().multiply(BigDecimal.valueOf(nights));
 
         log.info("Стоимость рассчитана: комната {}, цена за ночь={}, ночей={}, итого={}",
                 room.getNumber(), room.getPricePerNight(), nights, total);

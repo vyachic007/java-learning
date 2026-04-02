@@ -9,6 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class AmenityDaoImpl implements AmenityDao {
     }
 
     @Override
-    public void updatePrice(Long amenityId, double newPrice) {
+    public void updatePrice(Long amenityId, BigDecimal newPrice) {
         try {
             Session session = sessionFactory.getCurrentSession();
 

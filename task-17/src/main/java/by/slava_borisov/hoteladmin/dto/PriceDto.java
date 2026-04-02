@@ -1,8 +1,10 @@
 package by.slava_borisov.hoteladmin.dto;
 
+import java.math.BigDecimal;
+
 public record PriceDto(
-        Double totalPrice,
-        Double pricePerNight,
+        BigDecimal totalPrice,
+        BigDecimal pricePerNight,
         Long nights,
         Integer roomNumber
 ) { }

@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +30,11 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public Optional<Room> findByNumber(String number) {
-        TypedQuery<Room> query = session().createQuery("SELECT r FROM Room r WHERE r.number = :number", Room.class);
+    public Optional<Room> findByNumber(Integer number) {
+        TypedQuery<Room> query = session().createQuery(
+                "SELECT r FROM Room r WHERE r.number = :number",
+                Room.class
+        );
         query.setParameter("number", number);
 
         try {
@@ -65,7 +69,7 @@ public class RoomDaoImpl implements RoomDao {
     }
 
     @Override
-    public void updatePricePerNight(Long roomId, double newPrice) {
+    public void updatePricePerNight(Long roomId, BigDecimal newPrice) {
         int updated = session().createMutationQuery(
                         "UPDATE Room r SET r.pricePerNight = :price WHERE r.id = :id")
                 .setParameter("price", newPrice)
