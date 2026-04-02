@@ -6,9 +6,9 @@ services:
     container_name: hotel-postgres
     restart: always
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=hoteldb
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -25,11 +25,11 @@ services:
     depends_on:
       - postgres
     environment:
-      DB_URL: jdbc:postgresql://postgres:5432/hoteldb
-      DB_USER: admin
-      DB_PASSWORD: admin
-      ALLOW_ROOM_STATUS_CHANGE: "true"
-      GUEST_HISTORY_LIMIT: "2"
+      DB_URL: ${DB_URL_DOCKER}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ALLOW_ROOM_STATUS_CHANGE: ${ALLOW_ROOM_STATUS_CHANGE}
+      GUEST_HISTORY_LIMIT: ${GUEST_HISTORY_LIMIT}
     networks:
       - hotel-network
 
