@@ -6,9 +6,7 @@ import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
 import by.slava_borisov.hoteladmin.mapper.BookingMapper;
-import by.slava_borisov.hoteladmin.mapper.GuestMapper;
 import by.slava_borisov.hoteladmin.model.Booking;
-import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.service.BookingService;
 import by.slava_borisov.hoteladmin.service.RoomService;
 import jakarta.validation.Valid;
@@ -29,17 +27,14 @@ public class BookingRestController {
 
     private final BookingService bookingService;
     private final RoomService roomService;
-    private final GuestMapper guestMapper;
     private final BookingMapper bookingMapper;
 
     @PostMapping("/check-in")
     public ResponseEntity<BookingDto> checkIn(
             @Valid @RequestBody CheckInRequest request
     ) {
-        Guest guest = guestMapper.toEntity(request.guest());
-
         Booking booking = bookingService.checkIn(
-                guest,
+                request.guestId(),
                 request.roomId(),
                 request.checkInDate(),
                 request.checkOutDate()
@@ -47,7 +42,7 @@ public class BookingRestController {
         BookingDto bookingDto = bookingMapper.toDto(booking);
 
         log.info("POST: checkIn | guestId={}, roomId={}, checkInDate={}, checkOutDate={}",
-                request.guest().id(), request.roomId(), request.checkInDate(), request.checkOutDate());
+                request.guestId(), request.roomId(), request.checkInDate(), request.checkOutDate());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(bookingDto);
     }
@@ -68,8 +63,8 @@ public class BookingRestController {
     ) {
         PriceDto price = roomService.calculateRoomPrice(
                 request.roomId(),
-                java.time.LocalDate.parse(request.checkInDate()),
-                java.time.LocalDate.parse(request.checkOutDate())
+                request.checkInDate(),
+                request.checkOutDate()
         );
 
         log.info("POST: price | roomId={}, pricePerNight={}, nights={}, totalPrice={}",

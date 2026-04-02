@@ -38,15 +38,16 @@ public class BookingServiceImpl implements BookingService {
     private final AmenityUsageDao amenityUsageDao;
 
 
-    @Transactional
     @Override
-    public Booking checkIn(Guest guest, Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
-        log.info("Начало заселения: гость={}, комната id={}, даты {}-{}",
-                guest != null ? guest.getFullName() : "null", roomId, checkInDate, checkOutDate);
+    @Transactional
+    public Booking checkIn(Long guestId, Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+        log.info("Начало заселения: guestId={}, roomId={}, даты {}-{}",
+                guestId, roomId, checkInDate, checkOutDate);
 
-        validateCheckInInput(guest, checkInDate, checkOutDate);
+        validateCheckInInput(guestId, checkInDate, checkOutDate);
+
+        Guest guest = findGuestById(guestId);
         Room room = findAndValidateRoom(guest, roomId, checkInDate, checkOutDate);
-        guest = saveOrUpdateGuest(guest);
         Booking booking = createBooking(guest, room, checkInDate, checkOutDate);
         updateRoomStatusAfterCheckIn(roomId);
 
@@ -56,20 +57,20 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
-    private void validateCheckInInput(Guest guest, LocalDate checkInDate, LocalDate checkOutDate) {
-        if (guest == null) {
-            log.error("Ошибка заселения: гость не указан");
-            throw new IllegalArgumentException(Messages.GUEST_NOT_FOUND_EXCEPTION);
+    private void validateCheckInInput(Long guestId, LocalDate checkInDate, LocalDate checkOutDate) {
+        if (guestId == null) {
+            log.error("Ошибка заселения: guestId не указан");
+            throw new GuestNotFoundException(Messages.GUEST_NOT_FOUND_EXCEPTION);
         }
 
         if (checkInDate == null || checkOutDate == null) {
-            log.error("Ошибка заселения для гостя {}: даты не указаны", guest.getFullName());
+            log.error("Ошибка заселения для guestId={}: даты не указаны", guestId);
             throw new InvalidDateRangeException(Messages.INVALID_DATE_RANGE);
         }
 
         if (checkInDate.isAfter(checkOutDate) || checkInDate.isBefore(LocalDate.now())) {
-            log.error("Ошибка заселения для гостя {}: некорректный диапазон дат {}-{}",
-                    guest.getFullName(), checkInDate, checkOutDate);
+            log.error("Ошибка заселения для guestId={}: некорректный диапазон дат {}-{}",
+                    guestId, checkInDate, checkOutDate);
             throw new InvalidDateRangeException(Messages.INVALID_DATE_RANGE);
         }
     }
@@ -89,14 +90,6 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return room;
-    }
-
-    private Guest saveOrUpdateGuest(Guest guest) {
-        if (guest.getId() == null) {
-            guest = guestDao.create(guest);
-            log.debug("Создан новый гость с id={}", guest.getId());
-        }
-        return guest;
     }
 
     private Booking createBooking(Guest guest, Room room, LocalDate checkInDate, LocalDate checkOutDate) {
@@ -157,7 +150,6 @@ public class BookingServiceImpl implements BookingService {
         LocalDate finalUsageDate = prepareUsageDate(usageDate);
         validateQuantity(guestId, amenityId, quantity);
 
-        Guest guest = findGuestById(guestId);
         Amenity amenity = findAmenityById(amenityId);
         Booking booking = findActiveBookingForGuest(guestId);
 
