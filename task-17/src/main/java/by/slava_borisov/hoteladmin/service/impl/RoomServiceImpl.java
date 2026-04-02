@@ -3,7 +3,7 @@ package by.slava_borisov.hoteladmin.service.impl;
 import by.slava_borisov.hoteladmin.config.ConfigManager;
 import by.slava_borisov.hoteladmin.dao.RoomDao;
 import by.slava_borisov.hoteladmin.dto.RoomDto;
-import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
+import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.exception.DuplicateRoomNumberException;
 import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
 import by.slava_borisov.hoteladmin.mapper.RoomMapper;
@@ -131,12 +131,10 @@ public class RoomServiceImpl implements RoomService {
 
 
     @Override
-    public PriceResponse calculateRoomPrice(Long roomId, String checkInDateStr, String checkOutDateStr) {
+    @Transactional(readOnly = true)
+    public PriceDto calculateRoomPrice(Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
         log.info("Расчет стоимости проживания: комната id={}, даты {}-{}",
-                roomId, checkInDateStr, checkOutDateStr);
-
-        LocalDate checkIn = LocalDate.parse(checkInDateStr);
-        LocalDate checkOut = LocalDate.parse(checkOutDateStr);
+                roomId, checkInDate, checkOutDate);
 
         Room room = roomDao.findById(roomId)
                 .orElseThrow(() -> {
@@ -144,13 +142,13 @@ public class RoomServiceImpl implements RoomService {
                     return new RoomNotFoundException(roomId);
                 });
 
-        long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
+        long nights = ChronoUnit.DAYS.between(checkInDate, checkOutDate);
         double total = room.getPricePerNight() * nights;
 
         log.info("Стоимость рассчитана: комната {}, цена за ночь={}, ночей={}, итого={}",
                 room.getNumber(), room.getPricePerNight(), nights, total);
 
-        return new PriceResponse(total, room.getPricePerNight(), nights, room.getNumber());
+        return new PriceDto(total, room.getPricePerNight(), nights, room.getNumber());
     }
 
     @Override

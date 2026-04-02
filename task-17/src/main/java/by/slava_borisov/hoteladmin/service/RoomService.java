@@ -1,7 +1,7 @@
 package by.slava_borisov.hoteladmin.service;
 
 import by.slava_borisov.hoteladmin.dto.RoomDto;
-import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
+import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 
@@ -25,5 +25,5 @@ public interface RoomService {
 
     List<RoomDto> viewAllRoomsSortedBy(SortCriteria criteria);
 
-    PriceResponse calculateRoomPrice(Long roomId, String checkInDate, String checkOutDate);
+    PriceDto calculateRoomPrice(Long roomId, LocalDate checkInDate, LocalDate checkOutDate);
 }

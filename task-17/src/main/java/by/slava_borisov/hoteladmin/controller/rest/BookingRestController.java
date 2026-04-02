@@ -4,7 +4,7 @@ import by.slava_borisov.hoteladmin.dto.BookingDto;
 import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
-import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
+import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.mapper.BookingMapper;
 import by.slava_borisov.hoteladmin.mapper.GuestMapper;
 import by.slava_borisov.hoteladmin.model.Booking;
@@ -61,14 +61,15 @@ public class BookingRestController {
     }
 
     @PostMapping("/calculate-price")
-    public ResponseEntity<PriceResponse> calculatePrice(
+    public ResponseEntity<PriceDto> calculatePrice(
             @RequestBody PriceCalculationRequest request
     ) {
-        PriceResponse price = roomService.calculateRoomPrice(
+        PriceDto price = roomService.calculateRoomPrice(
                 request.roomId(),
-                request.checkInDate(),
-                request.checkOutDate()
+                java.time.LocalDate.parse(request.checkInDate()),
+                java.time.LocalDate.parse(request.checkOutDate())
         );
+
         log.info("POST: calculatePrice | roomId={}, pricePerNight={}, nights={}, totalPrice={}",
                 request.roomId(), price.pricePerNight(), price.nights(), price.totalPrice());
 

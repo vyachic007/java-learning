@@ -1,6 +1,6 @@
-package by.slava_borisov.hoteladmin.dto.response;
+package by.slava_borisov.hoteladmin.dto;
 
-public record PriceResponse(
+public record PriceDto(
         Double totalPrice,
         Double pricePerNight,
         Long nights,
