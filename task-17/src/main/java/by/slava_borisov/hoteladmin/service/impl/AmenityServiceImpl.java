@@ -3,17 +3,21 @@ package by.slava_borisov.hoteladmin.service.impl;
 import by.slava_borisov.hoteladmin.dao.AmenityDao;
 import by.slava_borisov.hoteladmin.dao.AmenityUsageDao;
 import by.slava_borisov.hoteladmin.dao.BookingDao;
+import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.dto.AmenityUsageDto;
 import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
+import by.slava_borisov.hoteladmin.exception.BookingNotFoundException;
+import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.mapper.AmenityMapper;
 import by.slava_borisov.hoteladmin.mapper.AmenityUsageMapper;
 import by.slava_borisov.hoteladmin.model.Amenity;
 import by.slava_borisov.hoteladmin.model.AmenityUsage;
 import by.slava_borisov.hoteladmin.model.Booking;
+import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.service.AmenityService;
-import by.slava_borisov.hoteladmin.service.BookingService;
 import by.slava_borisov.hoteladmin.service.QueryService;
+import by.slava_borisov.hoteladmin.util.Messages;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +37,7 @@ public class AmenityServiceImpl implements AmenityService {
     private final AmenityDao amenityDao;
     private final AmenityUsageDao amenityUsageDao;
     private final BookingDao bookingDao;
-    private final BookingService bookingService;
+    private final GuestDao guestDao;
     private final QueryService queryManager;
     private final AmenityMapper amenityMapper;
     private final AmenityUsageMapper amenityUsageMapper;
@@ -115,14 +119,49 @@ public class AmenityServiceImpl implements AmenityService {
         return result;
     }
 
-
     @Override
     @Transactional
     public AmenityUsageDto addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity) {
         log.info("Добавление услуги id={} гостю id={}, количество={}", amenityId, guestId, quantity);
-        AmenityUsage usage = bookingService.addAmenityToGuest(guestId, amenityId, usageDate, quantity);
-        log.info("Услуга добавлена гостю, usage id={}", usage.getId());
-        return amenityUsageMapper.toDto(usage);
+
+        LocalDate finalUsageDate = usageDate == null ? LocalDate.now() : usageDate;
+
+        if (quantity <= 0) {
+            log.error("Ошибка добавления услуги id={} гостю id={}: некорректное количество {}",
+                    amenityId, guestId, quantity);
+            throw new IllegalArgumentException(Messages.QUANTITY_MUST_BE_POSITIVE);
+        }
+
+        Guest guest = guestDao.findById(guestId)
+                .orElseThrow(() -> {
+                    log.error("Ошибка добавления услуги: гость id={} не найден", guestId);
+                    return new GuestNotFoundException(guestId);
+                });
+
+        Amenity amenity = amenityDao.findById(amenityId)
+                .orElseThrow(() -> {
+                    log.error("Ошибка добавления услуги: услуга id={} не найдена", amenityId);
+                    return new AmenityNotFoundException(amenityId);
+                });
+
+        Booking booking = bookingDao.findActiveByGuestId(guestId, LocalDate.now())
+                .orElseThrow(() -> {
+                    log.error("Ошибка добавления услуги: активное бронирование для гостя id={} не найдено", guestId);
+                    return new BookingNotFoundException(guestId);
+                });
+
+        AmenityUsage usage = new AmenityUsage();
+        usage.setUsageDate(finalUsageDate);
+        usage.setQuantity(quantity);
+        usage.setAmenity(amenity);
+        usage.setBooking(booking);
+
+        AmenityUsage created = amenityUsageDao.create(usage);
+
+        log.info("Услуга id={} добавлена гостю id={}, usage id={}",
+                amenity.getId(), guest.getId(), created.getId());
+
+        return amenityUsageMapper.toDto(created);
     }
 
     @Override
