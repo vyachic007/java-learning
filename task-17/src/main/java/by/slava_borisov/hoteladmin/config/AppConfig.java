@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -21,9 +22,11 @@ import java.util.Properties;
 public class AppConfig {
 
     private final ConfigManager configManager;
+    private final Environment environment;
 
-    public AppConfig(ConfigManager configManager) {
+    public AppConfig(ConfigManager configManager, Environment environment) {
         this.configManager = configManager;
+        this.environment = environment;
     }
 
     @Bean
@@ -57,12 +60,12 @@ public class AppConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.setProperty("hibernate.show_sql", "false");
-        properties.setProperty("hibernate.format_sql", "true");
-        properties.setProperty("hibernate.hbm2ddl.auto", "validate");
-        properties.setProperty("hibernate.use_sql_comments", "true");
-        properties.setProperty("hibernate.connection.pool_size", "10");
+        properties.setProperty("hibernate.dialect", environment.getProperty("hibernate.dialect"));
+        properties.setProperty("hibernate.show_sql", environment.getProperty("hibernate.show_sql"));
+        properties.setProperty("hibernate.format_sql", environment.getProperty("hibernate.format_sql"));
+        properties.setProperty("hibernate.hbm2ddl.auto", environment.getProperty("hibernate.hbm2ddl.auto"));
+        properties.setProperty("hibernate.use_sql_comments", environment.getProperty("hibernate.use_sql_comments"));
+        properties.setProperty("hibernate.connection.pool_size", environment.getProperty("hibernate.connection.pool_size"));
         return properties;
     }
 }
