@@ -28,7 +28,6 @@ import java.time.LocalDate;
 
 @Slf4j
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
 
@@ -38,6 +37,9 @@ public class BookingServiceImpl implements BookingService {
     private final AmenityDao amenityDao;
     private final AmenityUsageDao amenityUsageDao;
 
+
+    @Transactional
+    @Override
     public Booking checkIn(Guest guest, Long roomId, LocalDate checkInDate, LocalDate checkOutDate) {
         log.info("Начало заселения: гость={}, комната id={}, даты {}-{}",
                 guest != null ? guest.getFullName() : "null", roomId, checkInDate, checkOutDate);
@@ -111,6 +113,9 @@ public class BookingServiceImpl implements BookingService {
         roomDao.updateStatus(roomId, RoomStatus.OCCUPIED);
     }
 
+
+    @Transactional
+    @Override
     public void checkOut(Long roomId) {
         log.info("Начало выселения из комнаты id={}", roomId);
 
@@ -142,6 +147,9 @@ public class BookingServiceImpl implements BookingService {
                 roomId, booking.getId());
     }
 
+
+    @Transactional
+    @Override
     public AmenityUsage addAmenityToGuest(Long guestId, Long amenityId, LocalDate usageDate, int quantity) {
         log.info("Начало добавления услуги id={} гостю id={}, количество={}, дата={}",
                 amenityId, guestId, quantity, usageDate);
