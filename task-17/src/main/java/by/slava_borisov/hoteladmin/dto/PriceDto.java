@@ -4,5 +4,5 @@ public record PriceDto(
         Double totalPrice,
         Double pricePerNight,
         Long nights,
-        String roomNumber
+        Integer roomNumber
 ) { }

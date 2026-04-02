@@ -67,10 +67,9 @@ public class RoomServiceImpl implements RoomService {
         return result;
     }
 
-
     @Override
     @Transactional(readOnly = true)
-    public Optional<RoomDto> findRoomByNumber(String roomNumber) {
+    public Optional<RoomDto> findRoomByNumber(Integer roomNumber) {
         log.info("Поиск комнаты по номеру: {}", roomNumber);
         Optional<RoomDto> result = roomDao.findByNumber(roomNumber)
                 .map(roomMapper::toDto);
@@ -128,7 +127,6 @@ public class RoomServiceImpl implements RoomService {
         log.info("Найдено {} свободных комнат на дату {}", result.size(), date);
         return result;
     }
-
 
     @Override
     @Transactional(readOnly = true)

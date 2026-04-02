@@ -22,7 +22,7 @@ import java.util.List;
 public class Room extends BaseEntity {
 
     @Column(name = "number", nullable = false, unique = true)
-    private String number;
+    private Integer number;
 
     @Column(name = "price_per_night", nullable = false)
     private double pricePerNight;
@@ -40,8 +40,7 @@ public class Room extends BaseEntity {
     @OneToMany(mappedBy = "room")
     private List<Booking> bookings = new ArrayList<>();
 
-
-    public Room(String number, double pricePerNight, RoomStatus status,
+    public Room(Integer number, double pricePerNight, RoomStatus status,
                 int capacity, int stars) {
         super();
         this.number = number;
@@ -51,7 +50,7 @@ public class Room extends BaseEntity {
         this.stars = stars;
     }
 
-    public Room(Long id, String number, int stars, int capacity,
+    public Room(Long id, Integer number, int stars, int capacity,
                 RoomStatus status, double pricePerNight) {
         super(id);
         this.number = number;
@@ -60,7 +59,6 @@ public class Room extends BaseEntity {
         this.status = status;
         setPricePerNight(pricePerNight);
     }
-
 
     public void setPricePerNight(double pricePerNight) {
         if (pricePerNight < 0) {

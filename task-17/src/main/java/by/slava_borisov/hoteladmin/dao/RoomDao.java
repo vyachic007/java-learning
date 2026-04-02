@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface RoomDao extends GenericDao<Room, Long> {
 
-    Optional<Room> findByNumber(String number);
+    Optional<Room> findByNumber(Integer number);
 
     List<Room> findAvailableOnDate(LocalDate date);
 

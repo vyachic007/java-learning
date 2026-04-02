@@ -58,7 +58,7 @@ public class RoomRestController {
 
     @GetMapping("/by-number")
     public ResponseEntity<RoomDto> getRoomByNumber(
-            @RequestParam String number
+            @RequestParam Integer number
     ) {
         log.info("GET: getRoomByNumber | roomNumber={}", number);
 

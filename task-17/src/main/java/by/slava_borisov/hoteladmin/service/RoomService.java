@@ -15,7 +15,7 @@ public interface RoomService {
 
     Optional<RoomDto> findRoomById(Long roomId);
 
-    Optional<RoomDto> findRoomByNumber(String roomNumber);
+    Optional<RoomDto> findRoomByNumber(Integer roomNumber);
 
     void setRoomStatus(Long roomId, RoomStatus status);
 
