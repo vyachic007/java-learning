@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Guest saveOrUpdateGuest(Guest guest) {
-        if (guest.isNew()) {
+        if (guest.getId() == null) {
             guest = guestDao.create(guest);
             log.debug("Создан новый гость с id={}", guest.getId());
         }
@@ -98,7 +98,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private Booking createBooking(Guest guest, Room room, LocalDate checkInDate, LocalDate checkOutDate) {
-        return bookingDao.create(new Booking(guest, room, checkInDate, checkOutDate));
+        Booking booking = new Booking();
+        booking.setGuest(guest);
+        booking.setRoom(room);
+        booking.setCheckInDate(checkInDate);
+        booking.setCheckOutDate(checkOutDate);
+
+        return bookingDao.create(booking);
     }
 
     private void updateRoomStatusAfterCheckIn(Long roomId) {
@@ -194,9 +200,13 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private AmenityUsage createAmenityUsage(LocalDate usageDate, int quantity, Amenity amenity, Booking booking) {
-        AmenityUsage created = amenityUsageDao.create(
-                new AmenityUsage(usageDate, quantity, amenity, booking)
-        );
+        AmenityUsage usage = new AmenityUsage();
+        usage.setUsageDate(usageDate);
+        usage.setQuantity(quantity);
+        usage.setAmenity(amenity);
+        usage.setBooking(booking);
+
+        AmenityUsage created = amenityUsageDao.create(usage);
 
         log.info("Услуга id={} добавлена гостю id={}, usage id={}",
                 amenity.getId(), booking.getGuest().getId(), created.getId());
