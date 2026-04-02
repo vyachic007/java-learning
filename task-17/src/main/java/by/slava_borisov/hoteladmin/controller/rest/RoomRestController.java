@@ -8,9 +8,11 @@ import by.slava_borisov.hoteladmin.mapper.BookingMapper;
 import by.slava_borisov.hoteladmin.service.QueryService;
 import by.slava_borisov.hoteladmin.service.RoomService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -78,19 +80,19 @@ public class RoomRestController {
 
     @PostMapping
     public ResponseEntity<RoomDto> addRoom(
-            @RequestBody RoomDto roomDto
+            @Valid @RequestBody RoomDto roomDto
     ) {
-        RoomDto created = roomService.addRoom(roomDto);  // ← заменили
+        RoomDto created = roomService.addRoom(roomDto);
         log.info("POST: addRoom | roomId={}, number={}, pricePerNight={}, status={}, capacity={}, stars={}",
                 created.id(), created.number(), created.pricePerNight(), created.status(), created.capacity(), created.stars());
 
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}/price")
     public ResponseEntity<Void> changeRoomPrice(
             @PathVariable Long id,
-            @RequestBody ChangePriceRequest request
+            @Valid @RequestBody ChangePriceRequest request
     ) {
         log.info("PUT: changeRoomPrice | roomId={}, newPrice={}", id, request.newPrice());
 
@@ -101,7 +103,7 @@ public class RoomRestController {
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> changeRoomStatus(
             @PathVariable Long id,
-            @RequestBody RoomStatusRequest request
+            @Valid @RequestBody RoomStatusRequest request
     ) {
         log.info("PUT: changeRoomStatus | roomId={}, newStatus={}", id, request.status());
 

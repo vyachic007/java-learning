@@ -5,6 +5,7 @@ import by.slava_borisov.hoteladmin.dto.request.ChangePriceRequest;
 import by.slava_borisov.hoteladmin.exception.AmenityNotFoundException;
 import by.slava_borisov.hoteladmin.service.AmenityService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,7 @@ public class AmenityRestController {
 
     @PostMapping
     public ResponseEntity<AmenityDto> addAmenity(
-            @RequestBody AmenityDto amenityDto
+            @Valid @RequestBody AmenityDto amenityDto
     ) {
         AmenityDto created = amenityService.addAmenity(amenityDto);
         log.info("POST: addAmenity | id={}, name={}, price={}, category={}",
@@ -64,7 +65,7 @@ public class AmenityRestController {
     @PutMapping("/{id}/price")
     public ResponseEntity<Void> changeAmenityPrice(
             @PathVariable Long id,
-            @RequestBody ChangePriceRequest request
+            @Valid @RequestBody ChangePriceRequest request
     ) {
         amenityService.changeAmenityPrice(id, request.newPrice());
         log.info("PUT: changeAmenityPrice | amenityId={}, newPrice={}",
@@ -74,7 +75,9 @@ public class AmenityRestController {
     }
 
     private SortCriteria parseSortCriteria(String sort) {
-        if (sort == null) return SortCriteria.BY_ID;
+        if (sort == null) {
+            return SortCriteria.BY_ID;
+        }
         return switch (sort.toLowerCase()) {
             case "price" -> SortCriteria.BY_PRICE;
             case "category" -> SortCriteria.BY_NAME;

@@ -7,8 +7,10 @@ import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.service.AmenityService;
 import by.slava_borisov.hoteladmin.service.GuestService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -77,7 +79,7 @@ public class GuestRestController {
     @PostMapping("/{id}/amenities")
     public ResponseEntity<AmenityUsageDto> addAmenityToGuest(
             @PathVariable("id") Long id,
-            @RequestBody AddAmenityToGuestRequest request
+            @Valid @RequestBody AddAmenityToGuestRequest request
     ) {
         AmenityUsageDto result = amenityService.addAmenityToGuest(
                 id,
@@ -88,7 +90,7 @@ public class GuestRestController {
         log.info("POST: addAmenityToGuest | guestId={}, amenityId={}, quantity={}, usageDate={}",
                 id, request.amenityId(), request.quantity(), request.usageDate());
 
-        return ResponseEntity.status(201).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     private SortCriteria parseSortCriteria(String sort) {
