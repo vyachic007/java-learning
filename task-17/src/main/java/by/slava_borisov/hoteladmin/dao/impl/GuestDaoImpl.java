@@ -2,6 +2,7 @@ package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.model.Guest;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +27,17 @@ public class GuestDaoImpl implements GuestDao {
     @Override
     public Optional<Guest> findByPhone(String phone) {
         TypedQuery<Guest> query = session().createQuery(
-                "SELECT g FROM Guest g LEFT JOIN FETCH g.bookingHistory WHERE g.phone = :phone",
+                "SELECT g FROM Guest g WHERE g.phone = :phone",
                 Guest.class
         );
         query.setParameter("phone", phone);
-        List<Guest> guests = query.getResultList();
-        return guests.isEmpty() ? Optional.empty() : Optional.of(guests.get(0));
+
+        try {
+            Guest guest = query.getSingleResult();
+            return Optional.of(guest);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -78,9 +84,9 @@ public class GuestDaoImpl implements GuestDao {
                     FROM Booking b
                     WHERE b.checkInDate <= CURRENT_DATE
                       AND b.checkOutDate > CURRENT_DATE
-                      AND b.actualCheckOutDate IS NULL""",
-                Long.class
-        ).getSingleResult();
+                      AND b.actualCheckOutDate IS NULL
+                """, Long.class)
+                .getSingleResult();
 
         return count.intValue();
     }
@@ -102,7 +108,7 @@ public class GuestDaoImpl implements GuestDao {
                       AND b.checkOutDate > CURRENT_DATE
                       AND b.actualCheckOutDate IS NULL
                     ORDER BY b.checkOutDate, g.fullName
-                    """, Guest.class)
+                """, Guest.class)
                 .list();
     }
 }
