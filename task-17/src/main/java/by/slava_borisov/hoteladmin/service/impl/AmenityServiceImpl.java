@@ -38,9 +38,10 @@ public class AmenityServiceImpl implements AmenityService {
     private final AmenityUsageDao amenityUsageDao;
     private final BookingDao bookingDao;
     private final GuestDao guestDao;
-    private final QueryService queryManager;
+    private final QueryService queryService;
     private final AmenityMapper amenityMapper;
     private final AmenityUsageMapper amenityUsageMapper;
+
 
     @Override
     @Transactional
@@ -86,20 +87,17 @@ public class AmenityServiceImpl implements AmenityService {
         log.info("Получение списка услуг, сортировка: {}", criteria);
 
         List<AmenityDto> result = switch (criteria) {
-            case BY_PRICE -> queryManager.getAmenitiesSortedByPrice()
+            case BY_PRICE -> queryService.getAmenitiesSortedByPrice()
                     .stream()
                     .map(amenityMapper::toDto)
-                    .distinct()
                     .toList();
-            case BY_NAME -> queryManager.getAmenitiesSortedByCategory()
+            case BY_NAME -> queryService.getAmenitiesSortedByCategory()
                     .stream()
                     .map(amenityMapper::toDto)
-                    .distinct()
                     .toList();
             case BY_ID -> amenityDao.findAll()
                     .stream()
                     .map(amenityMapper::toDto)
-                    .distinct()
                     .toList();
             default -> throw new IllegalArgumentException("Неверный критерий сортировки: " + criteria);
         };
