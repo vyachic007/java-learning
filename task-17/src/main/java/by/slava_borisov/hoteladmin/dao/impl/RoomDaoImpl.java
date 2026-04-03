@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -47,9 +46,13 @@ public class RoomDaoImpl implements RoomDao {
 
     @Override
     public List<Room> findAvailableOnDate(LocalDate date) {
-        return session().createQuery("SELECT r FROM Room r WHERE r.id NOT IN " +
-                        "(SELECT b.room.id FROM Booking b WHERE :date BETWEEN b.checkInDate AND b.checkOutDate " +
-                        "AND b.actualCheckOutDate IS NULL)", Room.class)
+        return session().createQuery(
+                        "SELECT r FROM Room r WHERE r.id NOT IN " +
+                                "(SELECT b.room.id FROM Booking b " +
+                                "WHERE :date BETWEEN b.checkInDate AND b.checkOutDate " +
+                                "AND b.actualCheckOutDate IS NULL)",
+                        Room.class
+                )
                 .setParameter("date", date)
                 .list();
     }
@@ -65,6 +68,7 @@ public class RoomDaoImpl implements RoomDao {
         if (updated == 0) {
             throw new RoomNotFoundException(roomId);
         }
+
         log.debug("Статус комнаты id={} обновлен на {}", roomId, status);
     }
 
@@ -79,6 +83,7 @@ public class RoomDaoImpl implements RoomDao {
         if (updated == 0) {
             throw new RoomNotFoundException(roomId);
         }
+
         log.debug("Цена комнаты id={} обновлена на {}", roomId, newPrice);
     }
 
@@ -104,7 +109,6 @@ public class RoomDaoImpl implements RoomDao {
     @Override
     public Room update(Room room) {
         Room merged = session().merge(room);
-        session().flush();
         log.debug("Комната id={} обновлена", room.getId());
         return merged;
     }
@@ -112,12 +116,13 @@ public class RoomDaoImpl implements RoomDao {
     @Override
     public boolean deleteById(Long roomId) {
         Room roomForDelete = session().find(Room.class, roomId);
-        if (roomForDelete != null) {
-            session().remove(roomForDelete);
-            log.debug("Комната id={} удалена", roomId);
-            return true;
+        if (roomForDelete == null) {
+            return false;
         }
-        return false;
+
+        session().remove(roomForDelete);
+        log.debug("Комната id={} удалена", roomId);
+        return true;
     }
 
     @Override
@@ -126,6 +131,7 @@ public class RoomDaoImpl implements RoomDao {
                 "SELECT COUNT(r) FROM Room r WHERE r.status = 'AVAILABLE'",
                 Long.class
         ).getSingleResult();
+
         return count.intValue();
     }
 
