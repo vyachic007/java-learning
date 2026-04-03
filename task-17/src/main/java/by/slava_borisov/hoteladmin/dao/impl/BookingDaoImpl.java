@@ -33,9 +33,11 @@ public class BookingDaoImpl implements BookingDao {
                         "WHERE b.room.id = :roomId " +
                         "AND :date BETWEEN b.checkInDate AND b.checkOutDate " +
                         "AND b.actualCheckOutDate IS NULL",
-                Booking.class);
+                Booking.class
+        );
         query.setParameter("date", date);
         query.setParameter("roomId", roomId);
+
         try {
             Booking booking = query.getSingleResult();
             return Optional.of(booking);
@@ -51,7 +53,8 @@ public class BookingDaoImpl implements BookingDao {
                         "WHERE b.guest.id = :guestId " +
                         "AND :date BETWEEN b.checkInDate AND b.checkOutDate " +
                         "AND b.actualCheckOutDate IS NULL",
-                Booking.class);
+                Booking.class
+        );
         query.setParameter("guestId", guestId);
         query.setParameter("date", date);
 
@@ -75,7 +78,7 @@ public class BookingDaoImpl implements BookingDao {
                 )
                 .setParameter("roomId", roomId)
                 .setParameter("checkIn", checkIn)
-                .setParameter("isCheckOut", checkOut)
+                .setParameter("checkOut", checkOut)
                 .getSingleResult();
 
         return count > 0;
@@ -89,11 +92,9 @@ public class BookingDaoImpl implements BookingDao {
         }
 
         booking.setActualCheckOutDate(actualCheckOutDate);
-        session().merge(booking);
 
         log.debug("Дата выезда бронирования id={} обновлена на {}", bookingId, actualCheckOutDate);
     }
-
 
     @Override
     public Booking create(Booking booking) {
@@ -102,7 +103,6 @@ public class BookingDaoImpl implements BookingDao {
                 booking.getGuest().getId(), booking.getRoom().getId(), booking.getId());
         return booking;
     }
-
 
     @Override
     public Optional<Booking> findById(Long bookingId) {
@@ -126,12 +126,13 @@ public class BookingDaoImpl implements BookingDao {
     @Override
     public boolean deleteById(Long bookingId) {
         Booking bookingForDelete = session().find(Booking.class, bookingId);
-        if (bookingForDelete != null) {
-            session().remove(bookingForDelete);
-            log.debug("Бронирование id={} удалено", bookingId);
-            return true;
+        if (bookingForDelete == null) {
+            return false;
         }
-        return false;
+
+        session().remove(bookingForDelete);
+        log.debug("Бронирование id={} удалено", bookingId);
+        return true;
     }
 
     @Override
