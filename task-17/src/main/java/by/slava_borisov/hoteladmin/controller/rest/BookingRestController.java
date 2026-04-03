@@ -5,7 +5,7 @@ import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
-import by.slava_borisov.hoteladmin.mapper.BookingMapper;
+import by.slava_borisov.hoteladmin.mapper.entity.BookingMapper;
 import by.slava_borisov.hoteladmin.model.Booking;
 import by.slava_borisov.hoteladmin.service.BookingService;
 import by.slava_borisov.hoteladmin.service.RoomService;

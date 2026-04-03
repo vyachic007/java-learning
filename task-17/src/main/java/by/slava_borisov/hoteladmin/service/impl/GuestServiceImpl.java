@@ -3,7 +3,7 @@ package by.slava_borisov.hoteladmin.service.impl;
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
-import by.slava_borisov.hoteladmin.mapper.GuestMapper;
+import by.slava_borisov.hoteladmin.mapper.entity.GuestMapper;
 import by.slava_borisov.hoteladmin.service.GuestService;
 import by.slava_borisov.hoteladmin.service.QueryService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;

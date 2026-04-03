@@ -6,7 +6,7 @@ import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.exception.DuplicateRoomNumberException;
 import by.slava_borisov.hoteladmin.exception.RoomNotFoundException;
-import by.slava_borisov.hoteladmin.mapper.RoomMapper;
+import by.slava_borisov.hoteladmin.mapper.entity.RoomMapper;
 import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import by.slava_borisov.hoteladmin.service.QueryService;

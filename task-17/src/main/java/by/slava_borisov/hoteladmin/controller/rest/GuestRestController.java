@@ -1,7 +1,7 @@
 package by.slava_borisov.hoteladmin.controller.rest;
 
 import by.slava_borisov.hoteladmin.dto.GuestDto;
-import by.slava_borisov.hoteladmin.mapper.GuestSortMapper;
+import by.slava_borisov.hoteladmin.mapper.sort.GuestSortMapper;
 import by.slava_borisov.hoteladmin.service.GuestService;
 import by.slava_borisov.hoteladmin.service.QueryService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;

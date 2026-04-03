@@ -2,7 +2,7 @@ package by.slava_borisov.hoteladmin.controller.rest;
 
 import by.slava_borisov.hoteladmin.dto.AmenityDto;
 import by.slava_borisov.hoteladmin.dto.request.ChangePriceRequest;
-import by.slava_borisov.hoteladmin.mapper.AmenitySortMapper;
+import by.slava_borisov.hoteladmin.mapper.sort.AmenitySortMapper;
 import by.slava_borisov.hoteladmin.service.AmenityService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import jakarta.validation.Valid;

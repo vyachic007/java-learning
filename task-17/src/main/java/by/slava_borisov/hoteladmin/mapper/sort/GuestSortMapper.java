@@ -1,21 +1,20 @@
-package by.slava_borisov.hoteladmin.mapper;
+package by.slava_borisov.hoteladmin.mapper.sort;
 
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RoomSortMapper {
+public class GuestSortMapper {
 
     public SortCriteria map(String sort) {
         if (sort == null) {
-            return SortCriteria.BY_ID;
+            return SortCriteria.BY_CHECK_OUT_DATE;
         }
 
         return switch (sort.toLowerCase()) {
+            case "date" -> SortCriteria.BY_CHECK_OUT_DATE;
             case "id" -> SortCriteria.BY_ID;
-            case "price" -> SortCriteria.BY_PRICE;
-            case "capacity" -> SortCriteria.BY_CAPACITY;
-            case "stars" -> SortCriteria.BY_STARS;
+            case "name" -> SortCriteria.BY_NAME;
             default -> throw new IllegalArgumentException("Неверный параметр sort: " + sort);
         };
     }

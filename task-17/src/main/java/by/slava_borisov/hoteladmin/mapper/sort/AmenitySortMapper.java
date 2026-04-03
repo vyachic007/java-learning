@@ -1,4 +1,4 @@
-package by.slava_borisov.hoteladmin.mapper;
+package by.slava_borisov.hoteladmin.mapper.sort;
 
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import org.springframework.stereotype.Component;
