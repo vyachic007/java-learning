@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/api/rooms")
@@ -38,13 +37,13 @@ public class RoomRestController {
     private final BookingMapper bookingMapper;
 
     @GetMapping
-    public List<RoomDto> getAllRooms(
+    public ResponseEntity<List<RoomDto>> getAllRooms(
             @RequestParam(required = false) String sort
     ) {
         SortCriteria criteria = getSortCriteria(sort);
         log.info("GET: getAllRooms | sortCriteria={}", sort);
 
-        return roomService.viewAllRoomsSortedBy(criteria);
+        return ResponseEntity.ok(roomService.viewAllRoomsSortedBy(criteria));
     }
 
     @GetMapping("/{id}")
@@ -70,12 +69,20 @@ public class RoomRestController {
     }
 
     @GetMapping("/available")
-    public List<RoomDto> getAvailableRooms(
+    public ResponseEntity<List<RoomDto>> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         log.info("GET: getAvailableRooms | date={}", date);
 
-        return roomService.getAvailableRoomsOnDate(date);
+        return ResponseEntity.ok(roomService.getAvailableRoomsOnDate(date));
+    }
+
+    @GetMapping("/available/count")
+    public ResponseEntity<Integer> getAvailableRoomsCount() {
+        int count = queryService.countAvailableRooms();
+        log.info("GET: getAvailableRoomsCount | count={}", count);
+
+        return ResponseEntity.ok(count);
     }
 
     @PostMapping
@@ -112,19 +119,23 @@ public class RoomRestController {
     }
 
     @GetMapping("/{id}/history")
-    public List<BookingDto> getRoomBookings(
+    public ResponseEntity<List<BookingDto>> getRoomBookings(
             @PathVariable Long id
     ) {
         log.info("GET: getRoomBookings | roomId={}", id);
 
-        return queryService.getLastBookings(id, 10)
+        List<BookingDto> result = queryService.getLastBookings(id, 10)
                 .stream()
                 .map(bookingMapper::toDto)
                 .toList();
+
+        return ResponseEntity.ok(result);
     }
 
     private SortCriteria getSortCriteria(String sort) {
-        if (sort == null) return SortCriteria.BY_ID;
+        if (sort == null) {
+            return SortCriteria.BY_ID;
+        }
 
         return switch (sort.toLowerCase()) {
             case "price" -> SortCriteria.BY_PRICE;
