@@ -5,15 +5,18 @@ import by.slava_borisov.hoteladmin.dto.RoomDto;
 import by.slava_borisov.hoteladmin.dto.request.ChangePriceRequest;
 import by.slava_borisov.hoteladmin.dto.request.RoomStatusRequest;
 import by.slava_borisov.hoteladmin.mapper.BookingMapper;
+import by.slava_borisov.hoteladmin.mapper.RoomSortMapper;
 import by.slava_borisov.hoteladmin.service.QueryService;
 import by.slava_borisov.hoteladmin.service.RoomService;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
@@ -35,37 +39,34 @@ public class RoomRestController {
     private final RoomService roomService;
     private final QueryService queryService;
     private final BookingMapper bookingMapper;
+    private final RoomSortMapper roomSortMapper;
 
     @GetMapping
     public ResponseEntity<List<RoomDto>> getAllRooms(
             @RequestParam(required = false) String sort
     ) {
-        SortCriteria criteria = getSortCriteria(sort);
+        SortCriteria criteria = roomSortMapper.map(sort);
         log.info("GET: getAllRooms | sortCriteria={}", sort);
 
-        return ResponseEntity.ok(roomService.viewAllRoomsSortedBy(criteria));
+        return ResponseEntity.ok(roomService.getRoomsSortedBy(criteria));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<RoomDto> getRoomById(
-            @PathVariable Long id
+            @PathVariable @Positive Long id
     ) {
         log.info("GET: getRoomById | roomId={}", id);
 
-        return roomService.findRoomById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
     @GetMapping("/by-number")
     public ResponseEntity<RoomDto> getRoomByNumber(
-            @RequestParam Integer number
+            @RequestParam @Positive Integer number
     ) {
         log.info("GET: getRoomByNumber | roomNumber={}", number);
 
-        return roomService.findRoomByNumber(number)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(roomService.getRoomByNumber(number));
     }
 
     @GetMapping("/available")
@@ -98,7 +99,7 @@ public class RoomRestController {
 
     @PutMapping("/{id}/price")
     public ResponseEntity<Void> changeRoomPrice(
-            @PathVariable Long id,
+            @PathVariable @Positive Long id,
             @Valid @RequestBody ChangePriceRequest request
     ) {
         log.info("PUT: changeRoomPrice | roomId={}, newPrice={}", id, request.newPrice());
@@ -109,7 +110,7 @@ public class RoomRestController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> changeRoomStatus(
-            @PathVariable Long id,
+            @PathVariable @Positive Long id,
             @Valid @RequestBody RoomStatusRequest request
     ) {
         log.info("PUT: changeRoomStatus | roomId={}, newStatus={}", id, request.status());
@@ -118,30 +119,19 @@ public class RoomRestController {
         return ResponseEntity.ok().build();
     }
 
+
     @GetMapping("/{id}/history")
     public ResponseEntity<List<BookingDto>> getRoomBookings(
-            @PathVariable Long id
+            @PathVariable @Positive Long id,
+            @RequestParam(defaultValue = "10") @Positive int limit
     ) {
-        log.info("GET: getRoomBookings | roomId={}", id);
+        log.info("GET: getRoomBookings | roomId={}, limit={}", id, limit);
 
-        List<BookingDto> result = queryService.getLastBookings(id, 10)
+        List<BookingDto> result = queryService.getLastBookings(id, limit)
                 .stream()
                 .map(bookingMapper::toDto)
                 .toList();
 
         return ResponseEntity.ok(result);
-    }
-
-    private SortCriteria getSortCriteria(String sort) {
-        if (sort == null) {
-            return SortCriteria.BY_ID;
-        }
-
-        return switch (sort.toLowerCase()) {
-            case "price" -> SortCriteria.BY_PRICE;
-            case "capacity" -> SortCriteria.BY_CAPACITY;
-            case "stars" -> SortCriteria.BY_STARS;
-            default -> SortCriteria.BY_ID;
-        };
     }
 }

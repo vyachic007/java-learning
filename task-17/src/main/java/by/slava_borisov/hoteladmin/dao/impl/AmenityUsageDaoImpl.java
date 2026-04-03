@@ -28,7 +28,9 @@ public class AmenityUsageDaoImpl implements AmenityUsageDao {
                         "SELECT au FROM AmenityUsage au " +
                                 "JOIN FETCH au.amenity " +
                                 "JOIN FETCH au.booking " +
-                                "WHERE au.booking.id = :bookingId", AmenityUsage.class)
+                                "WHERE au.booking.id = :bookingId",
+                        AmenityUsage.class
+                )
                 .setParameter("bookingId", bookingId)
                 .list();
     }
@@ -43,29 +45,33 @@ public class AmenityUsageDaoImpl implements AmenityUsageDao {
 
     @Override
     public Optional<AmenityUsage> findById(Long id) {
-        throw new UnsupportedOperationException(
-                "AmenityUsage имеет составной ключ. Используйте findByBookingId(bookingId)");
+        AmenityUsage amenityUsage = session().find(AmenityUsage.class, id);
+        return Optional.ofNullable(amenityUsage);
     }
-
 
     @Override
     public List<AmenityUsage> findAll() {
-        return session().createQuery("SELECT au FROM AmenityUsage au", AmenityUsage.class)
+        return session()
+                .createQuery("SELECT au FROM AmenityUsage au", AmenityUsage.class)
                 .list();
     }
-
 
     @Override
     public AmenityUsage update(AmenityUsage amenityUsage) {
         AmenityUsage merged = session().merge(amenityUsage);
-        log.debug("Использование услуги обновлено: bookingId={}, amenityId={}",
-                amenityUsage.getBooking().getId(), amenityUsage.getAmenity().getId());
+        log.debug("Использование услуги обновлено: id={}", amenityUsage.getId());
         return merged;
     }
 
     @Override
     public boolean deleteById(Long id) {
-        throw new UnsupportedOperationException(
-                "AmenityUsage имеет составной ключ. Используйте deleteByBookingAndAmenity(bookingId, amenityId)");
+        AmenityUsage amenityUsage = session().find(AmenityUsage.class, id);
+        if (amenityUsage == null) {
+            return false;
+        }
+
+        session().remove(amenityUsage);
+        log.debug("Использование услуги удалено: id={}", id);
+        return true;
     }
 }

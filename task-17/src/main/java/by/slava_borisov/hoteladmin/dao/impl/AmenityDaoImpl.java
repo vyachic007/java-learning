@@ -26,23 +26,17 @@ public class AmenityDaoImpl implements AmenityDao {
 
     @Override
     public void updatePrice(Long amenityId, BigDecimal newPrice) {
-        try {
-            Session session = sessionFactory.getCurrentSession();
+        int updated = session().createMutationQuery(
+                        "UPDATE Amenity a SET a.price = :price WHERE a.id = :id")
+                .setParameter("id", amenityId)
+                .setParameter("price", newPrice)
+                .executeUpdate();
 
-            int updated = session.createMutationQuery("UPDATE Amenity a SET a.price = :price WHERE a.id = :id")
-                    .setParameter("id", amenityId)
-                    .setParameter("price", newPrice)
-                    .executeUpdate();
-
-            if (updated == 0) {
-                throw new AmenityNotFoundException(amenityId);
-            }
-
-            log.debug("Цена услуги id={} обновлена на {}", amenityId, newPrice);
-        } catch (Exception e) {
-            log.error("Ошибка при обновлении цены услуги id={}", amenityId, e);
-            throw new RuntimeException("Ошибка при обновлении услуги", e);
+        if (updated == 0) {
+            throw new AmenityNotFoundException(amenityId);
         }
+
+        log.debug("Цена услуги id={} обновлена на {}", amenityId, newPrice);
     }
 
     @Override
@@ -60,7 +54,7 @@ public class AmenityDaoImpl implements AmenityDao {
 
     @Override
     public List<Amenity> findAll() {
-        return session().createQuery("SELECT a FROM Amenity a", Amenity.class).list();
+        return session().createSelectionQuery("FROM Amenity", Amenity.class).list();
     }
 
     @Override
@@ -73,12 +67,13 @@ public class AmenityDaoImpl implements AmenityDao {
     @Override
     public boolean deleteById(Long amenityId) {
         Amenity amenityToDelete = session().find(Amenity.class, amenityId);
-        if (amenityToDelete != null) {
-            session().remove(amenityToDelete);
-            log.info("Услуга с id={} удалена", amenityId);
-            return true;
+        if (amenityToDelete == null) {
+            throw new AmenityNotFoundException(amenityId);
         }
-        return false;
+
+        session().remove(amenityToDelete);
+        log.info("Услуга с id={} удалена", amenityId);
+        return true;
     }
 
     @Override
