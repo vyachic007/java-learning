@@ -2,6 +2,7 @@ package by.slava_borisov.hoteladmin.service.impl;
 
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.dto.GuestDto;
+import by.slava_borisov.hoteladmin.exception.GuestNotFoundException;
 import by.slava_borisov.hoteladmin.mapper.GuestMapper;
 import by.slava_borisov.hoteladmin.service.GuestService;
 import by.slava_borisov.hoteladmin.service.QueryService;
@@ -13,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -26,39 +26,39 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<GuestDto> findGuestById(Long guestId) {
+    public GuestDto getGuestById(Long guestId) {
         log.info("Поиск гостя по id: {}", guestId);
-        Optional<GuestDto> result = guestDao.findById(guestId)
-                .map(guestMapper::toDto);
 
-        if (result.isPresent()) {
-            log.info("Гость с id={} найден: {}", guestId, result.get().fullName());
-        } else {
-            log.warn("Гость с id={} не найден", guestId);
-        }
+        GuestDto result = guestDao.findById(guestId)
+                .map(guestMapper::toDto)
+                .orElseThrow(() -> {
+                    log.warn("Гость с id={} не найден", guestId);
+                    return new GuestNotFoundException(guestId);
+                });
 
+        log.info("Гость с id={} найден: {}", guestId, result.fullName());
         return result;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<GuestDto> findGuestByPhone(String phone) {
+    public GuestDto getGuestByPhone(String phone) {
         log.info("Поиск гостя по телефону: {}", phone);
-        Optional<GuestDto> result = guestDao.findByPhone(phone)
-                .map(guestMapper::toDto);
 
-        if (result.isPresent()) {
-            log.info("Гость с телефоном {} найден: {}", phone, result.get().fullName());
-        } else {
-            log.warn("Гость с телефоном {} не найден", phone);
-        }
+        GuestDto result = guestDao.findByPhone(phone)
+                .map(guestMapper::toDto)
+                .orElseThrow(() -> {
+                    log.warn("Гость с телефоном {} не найден", phone);
+                    return new GuestNotFoundException(phone);
+                });
 
+        log.info("Гость с телефоном {} найден: {}", phone, result.fullName());
         return result;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<GuestDto> viewGuestsSortedBy(SortCriteria criteria) {
+    public List<GuestDto> getGuestsSortedBy(SortCriteria criteria) {
         log.info("Получение списка гостей, сортировка: {}", criteria);
 
         List<GuestDto> result = switch (criteria) {

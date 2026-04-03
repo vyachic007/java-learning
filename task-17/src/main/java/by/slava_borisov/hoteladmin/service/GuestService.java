@@ -4,13 +4,12 @@ import by.slava_borisov.hoteladmin.dto.GuestDto;
 import by.slava_borisov.hoteladmin.util.SortCriteria;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface GuestService {
 
-    Optional<GuestDto> findGuestById(Long guestId);
+    GuestDto getGuestById(Long guestId);
 
-    Optional<GuestDto> findGuestByPhone(String phone);
+    GuestDto getGuestByPhone(String phone);
 
-    List<GuestDto> viewGuestsSortedBy(SortCriteria criteria);
+    List<GuestDto> getGuestsSortedBy(SortCriteria criteria);
 }

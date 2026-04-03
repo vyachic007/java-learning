@@ -53,18 +53,6 @@ public class AmenityServiceImpl implements AmenityService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<AmenityDto> getAllAmenities() {
-        log.info("Получение списка всех услуг");
-        List<AmenityDto> result = amenityDao.findAll()
-                .stream()
-                .map(amenityMapper::toDto)
-                .toList();
-        log.info("Найдено {} услуг", result.size());
-        return result;
-    }
-
-    @Override
     @Transactional
     public void changeAmenityPrice(Long amenityId, BigDecimal newPrice) {
         log.info("Изменение цены услуги id={}, новая цена={}", amenityId, newPrice);
@@ -78,17 +66,17 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<AmenityDto> findAmenityById(Long amenityId) {
+    public AmenityDto getAmenityById(Long amenityId) {
         log.info("Поиск услуги по id: {}", amenityId);
-        Optional<AmenityDto> result = amenityDao.findById(amenityId)
-                .map(amenityMapper::toDto);
 
-        if (result.isPresent()) {
-            log.info("Услуга с id={} найдена: {}", amenityId, result.get().name());
-        } else {
-            log.warn("Услуга с id={} не найдена", amenityId);
-        }
+        AmenityDto result = amenityDao.findById(amenityId)
+                .map(amenityMapper::toDto)
+                .orElseThrow(() -> {
+                    log.warn("Услуга с id={} не найдена", amenityId);
+                    return new AmenityNotFoundException(amenityId);
+                });
 
+        log.info("Услуга с id={} найдена: {}", amenityId, result.name());
         return result;
     }
 
@@ -108,11 +96,12 @@ public class AmenityServiceImpl implements AmenityService {
                     .map(amenityMapper::toDto)
                     .distinct()
                     .toList();
-            default -> amenityDao.findAll()
+            case BY_ID -> amenityDao.findAll()
                     .stream()
                     .map(amenityMapper::toDto)
                     .distinct()
                     .toList();
+            default -> throw new IllegalArgumentException("Неверный критерий сортировки: " + criteria);
         };
 
         log.info("Найдено {} услуг", result.size());
@@ -166,7 +155,7 @@ public class AmenityServiceImpl implements AmenityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AmenityUsageDto> viewGuestAmenities(Long guestId) {
+    public List<AmenityUsageDto> getGuestAmenities(Long guestId) {
         log.info("Просмотр услуг гостя id={}", guestId);
 
         Optional<Booking> activeBookingOpt = bookingDao.findActiveByGuestId(guestId, LocalDate.now());
