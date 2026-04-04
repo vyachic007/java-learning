@@ -6,9 +6,7 @@ import by.slava_borisov.hoteladmin.model.Room;
 import by.slava_borisov.hoteladmin.model.RoomStatus;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +17,10 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class RoomDaoImpl implements RoomDao {
+public class RoomDaoImpl extends AbstractHibernateDao<Room, Long> implements RoomDao {
 
-    private final SessionFactory sessionFactory;
-
-    private Session session() {
-        return sessionFactory.getCurrentSession();
+    public RoomDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory, Room.class);
     }
 
     @Override
@@ -89,40 +84,25 @@ public class RoomDaoImpl implements RoomDao {
 
     @Override
     public Room create(Room room) {
-        session().persist(room);
+        Room created = super.create(room);
         log.debug("Комната с номером {} создана, id={}", room.getNumber(), room.getId());
-        return room;
-    }
-
-    @Override
-    public Optional<Room> findById(Long roomId) {
-        Room roomById = session().find(Room.class, roomId);
-        return Optional.ofNullable(roomById);
-    }
-
-    @Override
-    public List<Room> findAll() {
-        return session().createQuery("SELECT r FROM Room r", Room.class)
-                .list();
+        return created;
     }
 
     @Override
     public Room update(Room room) {
-        Room merged = session().merge(room);
+        Room merged = super.update(room);
         log.debug("Комната id={} обновлена", room.getId());
         return merged;
     }
 
     @Override
     public boolean deleteById(Long roomId) {
-        Room roomForDelete = session().find(Room.class, roomId);
-        if (roomForDelete == null) {
-            return false;
+        boolean deleted = super.deleteById(roomId);
+        if (deleted) {
+            log.debug("Комната id={} удалена", roomId);
         }
-
-        session().remove(roomForDelete);
-        log.debug("Комната id={} удалена", roomId);
-        return true;
+        return deleted;
     }
 
     @Override

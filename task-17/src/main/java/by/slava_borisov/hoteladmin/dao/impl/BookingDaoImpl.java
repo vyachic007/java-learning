@@ -5,9 +5,7 @@ import by.slava_borisov.hoteladmin.exception.BookingNotFoundException;
 import by.slava_borisov.hoteladmin.model.Booking;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -17,13 +15,10 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class BookingDaoImpl implements BookingDao {
+public class BookingDaoImpl extends AbstractHibernateDao<Booking, Long> implements BookingDao {
 
-    private final SessionFactory sessionFactory;
-
-    private Session session() {
-        return sessionFactory.getCurrentSession();
+    public BookingDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory, Booking.class);
     }
 
     @Override
@@ -92,47 +87,31 @@ public class BookingDaoImpl implements BookingDao {
         }
 
         booking.setActualCheckOutDate(actualCheckOutDate);
-
         log.debug("Дата выезда бронирования id={} обновлена на {}", bookingId, actualCheckOutDate);
     }
 
     @Override
     public Booking create(Booking booking) {
-        session().persist(booking);
+        Booking created = super.create(booking);
         log.debug("Бронирование для гостя id={} в комнате id={} создано, id={}",
                 booking.getGuest().getId(), booking.getRoom().getId(), booking.getId());
-        return booking;
-    }
-
-    @Override
-    public Optional<Booking> findById(Long bookingId) {
-        Booking bookingById = session().find(Booking.class, bookingId);
-        return Optional.ofNullable(bookingById);
-    }
-
-    @Override
-    public List<Booking> findAll() {
-        return session().createQuery("SELECT b FROM Booking b", Booking.class)
-                .list();
+        return created;
     }
 
     @Override
     public Booking update(Booking booking) {
-        Booking merged = session().merge(booking);
+        Booking merged = super.update(booking);
         log.debug("Бронирование id={} обновлено", booking.getId());
         return merged;
     }
 
     @Override
     public boolean deleteById(Long bookingId) {
-        Booking bookingForDelete = session().find(Booking.class, bookingId);
-        if (bookingForDelete == null) {
-            return false;
+        boolean deleted = super.deleteById(bookingId);
+        if (deleted) {
+            log.debug("Бронирование id={} удалено", bookingId);
         }
-
-        session().remove(bookingForDelete);
-        log.debug("Бронирование id={} удалено", bookingId);
-        return true;
+        return deleted;
     }
 
     @Override

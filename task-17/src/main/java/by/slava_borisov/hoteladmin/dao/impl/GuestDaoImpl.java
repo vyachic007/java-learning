@@ -4,9 +4,7 @@ import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.model.Guest;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -15,13 +13,10 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class GuestDaoImpl implements GuestDao {
+public class GuestDaoImpl extends AbstractHibernateDao<Guest, Long> implements GuestDao {
 
-    private final SessionFactory sessionFactory;
-
-    private Session session() {
-        return sessionFactory.getCurrentSession();
+    public GuestDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory, Guest.class);
     }
 
     @Override
@@ -42,39 +37,25 @@ public class GuestDaoImpl implements GuestDao {
 
     @Override
     public Guest create(Guest guest) {
-        session().persist(guest);
+        Guest created = super.create(guest);
         log.debug("Гость с телефоном {} создан, id={}", guest.getPhone(), guest.getId());
-        return guest;
-    }
-
-    @Override
-    public Optional<Guest> findById(Long guestId) {
-        Guest guestById = session().find(Guest.class, guestId);
-        return Optional.ofNullable(guestById);
-    }
-
-    @Override
-    public List<Guest> findAll() {
-        return session().createQuery("SELECT g FROM Guest g", Guest.class)
-                .list();
+        return created;
     }
 
     @Override
     public Guest update(Guest guest) {
-        Guest merged = session().merge(guest);
+        Guest merged = super.update(guest);
         log.debug("Гость id={} обновлен", guest.getId());
         return merged;
     }
 
     @Override
     public boolean deleteById(Long guestId) {
-        Guest guestToDelete = session().find(Guest.class, guestId);
-        if (guestToDelete != null) {
-            session().remove(guestToDelete);
+        boolean deleted = super.deleteById(guestId);
+        if (deleted) {
             log.debug("Гость id={} удален", guestId);
-            return true;
         }
-        return false;
+        return deleted;
     }
 
     @Override
