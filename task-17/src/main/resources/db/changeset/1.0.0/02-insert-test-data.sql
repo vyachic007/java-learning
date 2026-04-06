@@ -1,0 +1,83 @@
+--liquibase formatted sql
+
+--changeset vyacheslav_borisov:1.0.0-insert_rooms
+INSERT INTO rooms (number, price_per_night, status, capacity, stars)
+    VALUES
+        ('101', 3500.00, 'AVAILABLE', 2, 3),
+        ('102', 3500.00, 'AVAILABLE', 2, 3),
+        ('103', 3500.00, 'AVAILABLE', 2, 3),
+        ('104', 3500.00, 'AVAILABLE', 2, 3),
+        ('201', 4500.00, 'AVAILABLE', 3, 4),
+        ('202', 4500.00, 'AVAILABLE', 3, 4),
+        ('203', 4500.00, 'AVAILABLE', 3, 4),
+        ('204', 4500.00, 'AVAILABLE', 3, 4),
+        ('301', 5500.00, 'AVAILABLE', 4, 5),
+        ('302', 5500.00, 'AVAILABLE', 4, 5),
+        ('401', 6500.00, 'AVAILABLE', 5, 5),
+        ('402', 6500.00, 'AVAILABLE', 5, 5);
+--rollback DELETE FROM rooms WHERE number IN ('101','102','103','104','201','202','203','204','301','302','401','402');
+
+--changeset vyacheslav_borisov:1.0.0-insert_guests
+INSERT INTO guests (full_name, phone)
+    VALUES
+        ('Иван Иванов', '+752912345670'),
+        ('Петр Петров', '+752976543219'),
+        ('Мария Сидорова', '+753311223349'),
+        ('Анна Ковальчук', '+753334567898'),
+        ('Вячеслав Борисов', '+754411122338'),
+        ('Елена Смирнова', '+754422233844'),
+        ('Алексей Новиков', '+754455567677'),
+        ('Ольга Морозова', '+754466677888');
+--rollback DELETE FROM guests WHERE phone IN (
+--rollback     '+752912345670','+752976543219','+753311223349','+753334567898',
+--rollback     '+754411122338','+754422233844','+754455567677','+754466677888'
+--rollback );
+
+--changeset vyacheslav_borisov:1.0.0-insert_amenities
+INSERT INTO amenities (name, price, category)
+    VALUES
+         ('Завтрак', 25.00, 'Питание'),
+         ('Обед', 35.00, 'Питание'),
+         ('Ужин', 40.00, 'Питание'),
+         ('Шведский стол', 55.00, 'Питание'),
+         ('СПА', 100.00, 'Отдых'),
+         ('Сауна', 80.00, 'Отдых'),
+         ('Массаж', 120.00, 'Отдых'),
+         ('Тренажерный зал', 50.00, 'Спорт'),
+         ('Бассейн', 70.00, 'Спорт'),
+         ('Трансфер', 50.00, 'Транспорт'),
+         ('Парковка', 30.00, 'Транспорт'),
+         ('Wi-Fi', 15.00, 'Другое'),
+         ('Мини-бар', 45.00, 'Питание'),
+         ('Химчистка', 60.00, 'Услуги'),
+         ('Консьерж', 90.00, 'Услуги');
+--rollback DELETE FROM amenities WHERE name IN (
+--rollback     'Завтрак', 'Обед', 'Ужин', 'Шведский стол', 'СПА', 'Сауна',
+--rollback     'Массаж', 'Тренажерный зал', 'Бассейн', 'Трансфер', 'Парковка',
+--rollback     'Wi-Fi', 'Мини-бар', 'Химчистка', 'Консьерж'
+--rollback );
+
+--changeset vyacheslav_borisov:1.0.0-insert_bookings
+INSERT INTO bookings (guest_id, room_id, check_in_date, check_out_date, actual_check_out_date)
+    VALUES
+        (1, 1, '2026-02-10', '2026-02-15', NULL),
+        (2, 5, '2026-02-11', '2026-02-18', NULL),
+        (3, 9, '2026-02-09', '2026-02-14', '2026-02-14'),
+        (4, 2, '2026-02-12', '2026-02-16', NULL),
+        (5, 6, '2026-02-08', '2026-02-13', '2026-02-13'),
+        (6, 10, '2026-02-13', '2026-02-20', NULL);
+--rollback DELETE FROM bookings WHERE id IN (1,2,3,4,5,6);
+
+--changeset vyacheslav_borisov:1.0.0-insert_amenity_usages
+INSERT INTO amenity_usages (amenity_id, booking_id, usage_date, quantity)
+    VALUES
+        (1, 1, '2026-02-11', 2),
+        (2, 1, '2026-02-12', 2),
+        (4, 2, '2026-02-12', 1),
+        (5, 2, '2026-02-13', 2),
+        (1, 3, '2026-02-10', 1),
+        (8, 4, '2026-02-13', 1),
+        (9, 4, '2026-02-13', 1),
+        (10, 5, '2026-02-09', 1),
+        (13, 6, '2026-02-14', 1);
+--rollback DELETE FROM amenity_usages WHERE id IN (1,2,3,4,5,6,7,8,9);

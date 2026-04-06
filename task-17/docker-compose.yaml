@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: hotel-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - hotel-network
+
+  app:
+    build: .
+    container_name: hotel-app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: ${DB_URL_DOCKER}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      ALLOW_ROOM_STATUS_CHANGE: ${ALLOW_ROOM_STATUS_CHANGE}
+      GUEST_HISTORY_LIMIT: ${GUEST_HISTORY_LIMIT}
+    networks:
+      - hotel-network
+
+volumes:
+  postgres_data:
+    name: hotel-postgres-data
+
+networks:
+  hotel-network:
+    driver: bridge
