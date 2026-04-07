@@ -2,8 +2,8 @@ package by.slava_borisov.hoteladmin.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,8 +25,8 @@ public class User extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(nullable = false)
-    private String password;
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
     @Column(nullable = false)
     private String role;
@@ -35,10 +35,14 @@ public class User extends BaseEntity implements UserDetails {
     @JoinColumn(name = "guest_id")
     private Guest guest;
 
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+    }
+
+    @Override
+    public String getPassword() {
+        return passwordHash;
     }
 
     @Override
