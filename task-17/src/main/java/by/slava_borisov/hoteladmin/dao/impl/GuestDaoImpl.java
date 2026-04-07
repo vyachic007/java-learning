@@ -2,10 +2,9 @@ package by.slava_borisov.hoteladmin.dao.impl;
 
 import by.slava_borisov.hoteladmin.dao.GuestDao;
 import by.slava_borisov.hoteladmin.model.Guest;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
@@ -14,61 +13,49 @@ import java.util.Optional;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
-public class GuestDaoImpl implements GuestDao {
+public class GuestDaoImpl extends AbstractHibernateDao<Guest, Long> implements GuestDao {
 
-    private final SessionFactory sessionFactory;
-
-    private Session session() {
-        return sessionFactory.getCurrentSession();
+    public GuestDaoImpl(SessionFactory sessionFactory) {
+        super(sessionFactory, Guest.class);
     }
 
     @Override
     public Optional<Guest> findByPhone(String phone) {
         TypedQuery<Guest> query = session().createQuery(
-                "SELECT g FROM Guest g LEFT JOIN FETCH g.bookingHistory WHERE g.phone = :phone",
+                "SELECT g FROM Guest g WHERE g.phone = :phone",
                 Guest.class
         );
         query.setParameter("phone", phone);
-        List<Guest> guests = query.getResultList();
-        return guests.isEmpty() ? Optional.empty() : Optional.of(guests.get(0));
+
+        try {
+            Guest guest = query.getSingleResult();
+            return Optional.of(guest);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Guest create(Guest guest) {
-        session().persist(guest);
+        Guest created = super.create(guest);
         log.debug("Гость с телефоном {} создан, id={}", guest.getPhone(), guest.getId());
-        return guest;
-    }
-
-    @Override
-    public Optional<Guest> findById(Long guestId) {
-        Guest guestById = session().find(Guest.class, guestId);
-        return Optional.ofNullable(guestById);
-    }
-
-    @Override
-    public List<Guest> findAll() {
-        return session().createQuery("SELECT g FROM Guest g", Guest.class)
-                .list();
+        return created;
     }
 
     @Override
     public Guest update(Guest guest) {
-        Guest merged = session().merge(guest);
+        Guest merged = super.update(guest);
         log.debug("Гость id={} обновлен", guest.getId());
         return merged;
     }
 
     @Override
     public boolean deleteById(Long guestId) {
-        Guest guestToDelete = session().find(Guest.class, guestId);
-        if (guestToDelete != null) {
-            session().remove(guestToDelete);
+        boolean deleted = super.deleteById(guestId);
+        if (deleted) {
             log.debug("Гость id={} удален", guestId);
-            return true;
         }
-        return false;
+        return deleted;
     }
 
     @Override
@@ -78,9 +65,9 @@ public class GuestDaoImpl implements GuestDao {
                     FROM Booking b
                     WHERE b.checkInDate <= CURRENT_DATE
                       AND b.checkOutDate > CURRENT_DATE
-                      AND b.actualCheckOutDate IS NULL""",
-                Long.class
-        ).getSingleResult();
+                      AND b.actualCheckOutDate IS NULL
+                """, Long.class)
+                .getSingleResult();
 
         return count.intValue();
     }
@@ -102,7 +89,7 @@ public class GuestDaoImpl implements GuestDao {
                       AND b.checkOutDate > CURRENT_DATE
                       AND b.actualCheckOutDate IS NULL
                     ORDER BY b.checkOutDate, g.fullName
-                    """, Guest.class)
+                """, Guest.class)
                 .list();
     }
 }

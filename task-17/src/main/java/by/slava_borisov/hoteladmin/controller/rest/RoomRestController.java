@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Slf4j
+@Validated
 @RestController
 @RequestMapping("/api/rooms")
 @RequiredArgsConstructor
@@ -35,69 +34,68 @@ public class RoomRestController {
     private final RoomService roomService;
     private final QueryService queryService;
     private final BookingMapper bookingMapper;
+    private final RoomSortMapper roomSortMapper;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public List<RoomDto> getAllRooms(
+    public ResponseEntity<List<RoomDto>> getAllRooms(
             @RequestParam(required = false) String sort
     ) {
-        SortCriteria criteria = getSortCriteria(sort);
+        SortCriteria criteria = roomSortMapper.map(sort);
         log.info("GET: getAllRooms | sortCriteria={}", sort);
 
-        return roomService.viewAllRoomsSortedBy(criteria);
+        return ResponseEntity.ok(roomService.getRoomsSortedBy(criteria));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<RoomDto> getRoomById(
-            @PathVariable Long id
+            @PathVariable @Positive Long id
     ) {
         log.info("GET: getRoomById | roomId={}", id);
 
-        return roomService.findRoomById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(roomService.getRoomById(id));
     }
 
     @GetMapping("/by-number")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<RoomDto> getRoomByNumber(
-            @RequestParam String number
+            @RequestParam @Positive Integer number
     ) {
         log.info("GET: getRoomByNumber | roomNumber={}", number);
 
-        return roomService.findRoomByNumber(number)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(roomService.getRoomByNumber(number));
     }
 
     @GetMapping("/available")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public List<RoomDto> getAvailableRooms(
+    public ResponseEntity<List<RoomDto>> getAvailableRooms(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
         log.info("GET: getAvailableRooms | date={}", date);
 
-        return roomService.getAvailableRoomsOnDate(date);
+        return ResponseEntity.ok(roomService.getAvailableRoomsOnDate(date));
+    }
+
+    @GetMapping("/available/count")
+    public ResponseEntity<Integer> getAvailableRoomsCount() {
+        int count = queryService.countAvailableRooms();
+        log.info("GET: getAvailableRoomsCount | count={}", count);
+
+        return ResponseEntity.ok(count);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RoomDto> addRoom(
-            @RequestBody RoomDto roomDto
+            @Valid @RequestBody RoomDto roomDto
     ) {
-        RoomDto created = roomService.addRoom(roomDto);  // ← заменили
+        RoomDto created = roomService.addRoom(roomDto);
         log.info("POST: addRoom | roomId={}, number={}, pricePerNight={}, status={}, capacity={}, stars={}",
                 created.id(), created.number(), created.pricePerNight(), created.status(), created.capacity(), created.stars());
 
-        return ResponseEntity.status(201).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}/price")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> changeRoomPrice(
-            @PathVariable Long id,
-            @RequestBody ChangePriceRequest request
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody ChangePriceRequest request
     ) {
         log.info("PUT: changeRoomPrice | roomId={}, newPrice={}", id, request.newPrice());
 
@@ -106,10 +104,9 @@ public class RoomRestController {
     }
 
     @PutMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> changeRoomStatus(
-            @PathVariable Long id,
-            @RequestBody RoomStatusRequest request
+            @PathVariable @Positive Long id,
+            @Valid @RequestBody RoomStatusRequest request
     ) {
         log.info("PUT: changeRoomStatus | roomId={}, newStatus={}", id, request.status());
 
@@ -117,27 +114,19 @@ public class RoomRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}/history")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<BookingDto> getRoomBookings(
-            @PathVariable Long id
-    ) {
-        log.info("GET: getRoomBookings | roomId={}", id);
 
-        return queryService.getLastBookings(id, 10)
+    @GetMapping("/{id}/history")
+    public ResponseEntity<List<BookingDto>> getRoomBookings(
+            @PathVariable @Positive Long id,
+            @RequestParam(defaultValue = "10") @Positive int limit
+    ) {
+        log.info("GET: getRoomBookings | roomId={}, limit={}", id, limit);
+
+        List<BookingDto> result = queryService.getLastBookings(id, limit)
                 .stream()
                 .map(bookingMapper::toDto)
                 .toList();
-    }
 
-    private SortCriteria getSortCriteria(String sort) {
-        if (sort == null) return SortCriteria.BY_ID;
-
-        return switch (sort.toLowerCase()) {
-            case "price" -> SortCriteria.BY_PRICE;
-            case "capacity" -> SortCriteria.BY_CAPACITY;
-            case "stars" -> SortCriteria.BY_STARS;
-            default -> SortCriteria.BY_ID;
-        };
+        return ResponseEntity.ok(result);
     }
 }

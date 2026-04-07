@@ -1,24 +1,23 @@
 package by.slava_borisov.hoteladmin.controller.rest;
 
 import by.slava_borisov.hoteladmin.dto.BookingDto;
+import by.slava_borisov.hoteladmin.dto.PriceDto;
 import by.slava_borisov.hoteladmin.dto.request.CheckInRequest;
 import by.slava_borisov.hoteladmin.dto.request.CheckOutRequest;
 import by.slava_borisov.hoteladmin.dto.request.PriceCalculationRequest;
-import by.slava_borisov.hoteladmin.dto.response.PriceResponse;
-import by.slava_borisov.hoteladmin.mapper.BookingMapper;
-import by.slava_borisov.hoteladmin.mapper.GuestMapper;
+import by.slava_borisov.hoteladmin.mapper.entity.BookingMapper;
 import by.slava_borisov.hoteladmin.model.Booking;
-import by.slava_borisov.hoteladmin.model.Guest;
 import by.slava_borisov.hoteladmin.service.BookingService;
 import by.slava_borisov.hoteladmin.service.RoomService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -28,18 +27,14 @@ public class BookingRestController {
 
     private final BookingService bookingService;
     private final RoomService roomService;
-    private final GuestMapper guestMapper;
     private final BookingMapper bookingMapper;
 
     @PostMapping("/check-in")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BookingDto> checkIn(
-            @RequestBody CheckInRequest request
+            @Valid @RequestBody CheckInRequest request
     ) {
-        Guest guest = guestMapper.toEntity(request.guest());
-
         Booking booking = bookingService.checkIn(
-                guest,
+                request.guestId(),
                 request.roomId(),
                 request.checkInDate(),
                 request.checkOutDate()
@@ -47,37 +42,34 @@ public class BookingRestController {
         BookingDto bookingDto = bookingMapper.toDto(booking);
 
         log.info("POST: checkIn | guestId={}, roomId={}, checkInDate={}, checkOutDate={}",
-                request.guest().id(), request.roomId(), request.checkInDate(), request.checkOutDate());
+                request.guestId(), request.roomId(), request.checkInDate(), request.checkOutDate());
 
-        return ResponseEntity.status(201).body(bookingDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(bookingDto);
     }
 
     @PostMapping("/check-out")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> checkOut(
-            @RequestBody CheckOutRequest request
+    public ResponseEntity<Void> checkOut(
+            @Valid @RequestBody CheckOutRequest request
     ) {
         bookingService.checkOut(request.roomId());
-        log.info("POST: isCheckOut | roomId={}", request.roomId());
+        log.info("POST: checkOut | roomId={}", request.roomId());
 
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/calculate-price")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<PriceResponse> calculatePrice(
-            @RequestBody PriceCalculationRequest request
+    @PostMapping("/price")
+    public ResponseEntity<PriceDto> calculatePrice(
+            @Valid @RequestBody PriceCalculationRequest request
     ) {
-        log.info("Calculating price for roomId={}, dates={} - {}",
-                request.roomId(), request.checkInDate(), request.checkOutDate());
-
-        PriceResponse price = roomService.calculateRoomPrice(
+        PriceDto price = roomService.calculateRoomPrice(
                 request.roomId(),
                 request.checkInDate(),
                 request.checkOutDate()
         );
 
-        log.info("Price calculated successfully: {}", price);
+        log.info("POST: price | roomId={}, pricePerNight={}, nights={}, totalPrice={}",
+                request.roomId(), price.pricePerNight(), price.nights(), price.totalPrice());
+
         return ResponseEntity.ok(price);
     }
 }
