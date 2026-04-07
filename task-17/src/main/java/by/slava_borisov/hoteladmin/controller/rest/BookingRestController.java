@@ -71,17 +71,13 @@ public class BookingRestController {
         log.info("Calculating price for roomId={}, dates={} - {}",
                 request.roomId(), request.checkInDate(), request.checkOutDate());
 
-        try {
-            PriceResponse price = roomService.calculateRoomPrice(
-                    request.roomId(),
-                    request.checkInDate(),
-                    request.checkOutDate()
-            );
-            log.info("Price calculated successfully: {}", price);
-            return ResponseEntity.ok(price);
-        } catch (Exception e) {
-            log.error("Error calculating price: {}", e.getMessage(), e);
-            throw e;
-        }
+        PriceResponse price = roomService.calculateRoomPrice(
+                request.roomId(),
+                request.checkInDate(),
+                request.checkOutDate()
+        );
+
+        log.info("Price calculated successfully: {}", price);
+        return ResponseEntity.ok(price);
     }
 }
