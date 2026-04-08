@@ -30,7 +30,7 @@ public class Transfer {
     @Column(name = "to_account_id", nullable = false)
     private Long toAccountId;
 
-    @Column(nullable = false, precision = 19, scale = 2)
+    @Column(nullable = false, precision = 19, scale = 4)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
