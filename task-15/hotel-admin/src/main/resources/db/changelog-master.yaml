@@ -1,7 +1,7 @@
 databaseChangeLog:
   - include:
-      file: db/changeset/01-create-schema.sql
+      file: db/changeset/1.0.0/01-init.sql
       relativeToChangelogFile: false
   - include:
-      file: db/changeset/02-insert-test-data.sql
+      file: db/changeset/1.0.0/02-insert-test-data.sql
       relativeToChangelogFile: false
