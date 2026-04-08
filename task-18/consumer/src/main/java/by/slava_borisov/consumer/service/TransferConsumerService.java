@@ -5,6 +5,7 @@ import by.slava_borisov.consumer.dao.TransferDao;
 import by.slava_borisov.consumer.model.Account;
 import by.slava_borisov.consumer.model.Transfer;
 import by.slava_borisov.consumer.model.TransferMessage;
+import by.slava_borisov.consumer.model.TransferStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,25 +22,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TransferConsumerService {
 
+    private static final String TOPIC = "transfers";
+
     private final AccountDao accountDao;
     private final TransferDao transferDao;
     private final ObjectMapper objectMapper;
     private final TransactionTemplate transactionTemplate;
 
-    private static final String TOPIC = "transfers";
-
     @KafkaListener(topics = TOPIC, containerFactory = "kafkaListenerContainerFactory")
     public void listen(List<String> messages, Acknowledgment ack) {
-
         log.info("Получена пачка сообщений, размер={}", messages.size());
 
         for (String messageJson : messages) {
             try {
-                log.info("Начало обработки сообщения");
-
                 TransferMessage message = objectMapper.readValue(messageJson, TransferMessage.class);
+                log.info("Начало обработки сообщения id={}", message.getId());
                 processMessage(message);
-
             } catch (Exception e) {
                 log.error("Ошибка обработки сообщения: {}", messageJson, e);
             }
@@ -50,7 +47,6 @@ public class TransferConsumerService {
     }
 
     public void processMessage(TransferMessage message) {
-
         if (transferDao.isExistsById(message.getId())) {
             log.info("Перевод с id={} уже обработан, пропускаем", message.getId());
             return;
@@ -71,70 +67,72 @@ public class TransferConsumerService {
             return;
         }
 
-        Account fromAccount = fromAccountOpt.get();
-        Account toAccount = toAccountOpt.get();
-
-        if (fromAccount.getBalance().compareTo(message.getAmount()) < 0) {
-            log.error("Ошибка валидации: недостаточно средств на счете {}. Баланс={}, сумма списания={}",
-                    message.getFromAccountId(), fromAccount.getBalance(), message.getAmount());
-            saveErrorTransfer(message);
-            return;
-        }
-
         try {
-            BigDecimal newFromBalance = fromAccount.getBalance().subtract(message.getAmount());
-            BigDecimal newToBalance = toAccount.getBalance().add(message.getAmount());
+            transactionTemplate.executeWithoutResult(status -> {
+                boolean withdrawn = accountDao.withdrawIfEnough(message.getFromAccountId(), message.getAmount());
 
-            transactionTemplate.execute(status -> {
-                accountDao.updateBalance(message.getFromAccountId(), newFromBalance);
-                accountDao.updateBalance(message.getToAccountId(), newToBalance);
+                if (!withdrawn) {
+                    throw new IllegalArgumentException(
+                            "Недостаточно средств на счете " + message.getFromAccountId()
+                    );
+                }
+
+                boolean deposited = accountDao.deposit(message.getToAccountId(), message.getAmount());
+
+                if (!deposited) {
+                    throw new IllegalStateException(
+                            "Не удалось зачислить деньги на счет " + message.getToAccountId()
+                    );
+                }
 
                 Transfer transfer = new Transfer(
                         message.getId(),
                         message.getFromAccountId(),
                         message.getToAccountId(),
                         message.getAmount(),
-                        "готово"
+                        TransferStatus.READY
                 );
 
                 transferDao.save(transfer);
-                return null;
             });
 
             log.info("Успешно обработан перевод id={}", message.getId());
 
+        } catch (IllegalArgumentException e) {
+            log.error("Ошибка валидации при обработке перевода id={}: {}", message.getId(), e.getMessage());
+            saveErrorTransfer(message);
         } catch (Exception e) {
             log.error("Сбой при обновлении балансов для перевода id={}", message.getId(), e);
 
-            transactionTemplate.execute(status -> {
+            transactionTemplate.executeWithoutResult(status -> {
                 Transfer errorTransfer = new Transfer(
                         message.getId(),
                         message.getFromAccountId(),
                         message.getToAccountId(),
                         message.getAmount(),
-                        "завершилось с ошибкой"
+                        TransferStatus.ERROR
                 );
 
                 transferDao.save(errorTransfer);
-                return null;
             });
-
-            throw new RuntimeException("Ошибка обновления балансов", e);
         }
     }
 
     private void saveErrorTransfer(TransferMessage message) {
-        transactionTemplate.execute(status -> {
+        transactionTemplate.executeWithoutResult(status -> {
+            if (transferDao.isExistsById(message.getId())) {
+                return;
+            }
+
             Transfer errorTransfer = new Transfer(
                     message.getId(),
                     message.getFromAccountId(),
                     message.getToAccountId(),
                     message.getAmount(),
-                    "завершилось с ошибкой"
+                    TransferStatus.ERROR
             );
 
             transferDao.save(errorTransfer);
-            return null;
         });
     }
 }

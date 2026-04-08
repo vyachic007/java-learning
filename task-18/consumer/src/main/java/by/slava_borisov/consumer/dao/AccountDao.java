@@ -9,5 +9,7 @@ public interface AccountDao {
 
     Optional<Account> findById(Long accountId);
 
-    void updateBalance(Long accountId, BigDecimal newBalance);
+    boolean withdrawIfEnough(Long accountId, BigDecimal amount);
+
+    boolean deposit(Long accountId, BigDecimal amount);
 }

@@ -25,12 +25,29 @@ public class AccountDaoImpl implements AccountDao {
 
     @Override
     @Transactional("transactionManager")
-    public void updateBalance(Long accountId, BigDecimal newBalance) {
-        Query query = entityManager.createQuery(
-                "UPDATE Account a SET a.balance = :newBalance WHERE a.id = :accountId"
-        );
-        query.setParameter("newBalance", newBalance);
+    public boolean withdrawIfEnough(Long accountId, BigDecimal amount) {
+        Query query = entityManager.createQuery("""
+                UPDATE Account a
+                SET a.balance = a.balance - :amount
+                WHERE a.id = :accountId AND a.balance >= :amount
+                """);
+        query.setParameter("amount", amount);
         query.setParameter("accountId", accountId);
-        query.executeUpdate();
+
+        return query.executeUpdate() == 1;
+    }
+
+    @Override
+    @Transactional("transactionManager")
+    public boolean deposit(Long accountId, BigDecimal amount) {
+        Query query = entityManager.createQuery("""
+                UPDATE Account a
+                SET a.balance = a.balance + :amount
+                WHERE a.id = :accountId
+                """);
+        query.setParameter("amount", amount);
+        query.setParameter("accountId", accountId);
+
+        return query.executeUpdate() == 1;
     }
 }
