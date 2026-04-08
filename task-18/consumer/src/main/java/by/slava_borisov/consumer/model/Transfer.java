@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 public class Transfer {
 
     @Id
+    @Column(nullable = false, updatable = false)
     private String id;
 
     @Column(name = "from_account_id", nullable = false)
