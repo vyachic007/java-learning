@@ -9,7 +9,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,16 +22,14 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class TransferProducerService {
 
+    private static final String TOPIC = "transfers";
+
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final AccountDataInitializer accountDataInitializer;
     private final ObjectMapper objectMapper;
 
-    private static final String TOPIC = "transfers";
-
-    @Transactional("kafkaTransactionManager")
     @Scheduled(fixedDelay = 200)
     public void generateAndSend() {
-
         try {
             List<Long> accountIds = new ArrayList<>(accountDataInitializer.getAccountMap().keySet());
 
@@ -51,7 +48,10 @@ public class TransferProducerService {
             String transferId = UUID.randomUUID().toString();
 
             TransferMessage message = new TransferMessage(
-                    transferId, fromId, toId, amount
+                    transferId,
+                    fromId,
+                    toId,
+                    amount
             );
 
             String jsonMessage = objectMapper.writeValueAsString(message);
@@ -60,7 +60,6 @@ public class TransferProducerService {
                     new ProducerRecord<>(TOPIC, transferId, jsonMessage);
 
             kafkaTemplate.executeInTransaction(operations -> {
-
                 operations.send(record).whenComplete((result, ex) -> {
                     if (ex == null) {
                         log.info("Отправлено сообщение: id={}, со счета={}, на счет={}, сумма={}, партиция={}",
@@ -74,7 +73,8 @@ public class TransferProducerService {
                                 message.getId(),
                                 message.getFromAccountId(),
                                 message.getToAccountId(),
-                                message.getAmount(), ex);
+                                message.getAmount(),
+                                ex);
                     }
                 });
 
