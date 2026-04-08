@@ -33,17 +33,26 @@ public class TransferConsumerService {
     public void listen(List<String> messages, Acknowledgment ack) {
         log.info("Получена пачка сообщений, размер={}", messages.size());
 
+        boolean allProcessed = true;
+
         for (String messageJson : messages) {
             try {
                 TransferMessage message = objectMapper.readValue(messageJson, TransferMessage.class);
                 log.info("Начало обработки сообщения id={}", message.getId());
                 processMessage(message);
             } catch (Exception e) {
+                allProcessed = false;
                 log.error("Ошибка обработки сообщения: {}", messageJson, e);
+                break;
             }
         }
 
-        ack.acknowledge();
+        if (allProcessed) {
+            ack.acknowledge();
+            log.info("Пачка сообщений успешно подтверждена");
+        } else {
+            throw new RuntimeException("Пачка обработана не полностью, offset не подтвержден");
+        }
     }
 
     public void processMessage(TransferMessage message) {
@@ -105,6 +114,10 @@ public class TransferConsumerService {
             log.error("Сбой при обновлении балансов для перевода id={}", message.getId(), e);
 
             transactionTemplate.executeWithoutResult(status -> {
+                if (transferDao.isExistsById(message.getId())) {
+                    return;
+                }
+
                 Transfer errorTransfer = new Transfer(
                         message.getId(),
                         message.getFromAccountId(),
@@ -115,6 +128,8 @@ public class TransferConsumerService {
 
                 transferDao.save(errorTransfer);
             });
+
+            throw new RuntimeException("Ошибка обработки перевода id=" + message.getId(), e);
         }
     }
 
