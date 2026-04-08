@@ -27,4 +27,10 @@ public final class Messages {
     public static final String LIQUIBASE_CHANGELOG_PATH = "db/changelog-master.yaml";
     public static final String LIQUIBASE_MIGRATION_SUCCESS = "Liquibase: миграции выполнены";
     public static final String LIQUIBASE_MIGRATION_ERROR = "Ошибка Liquibase";
+
+    public static final String ACCESS_DENIED_MESSAGE = "У вас нет прав для этого действия";
+    public static final String BAD_CREDENTIALS_MESSAGE = "Неверный логин или пароль";
+    public static final String AUTHENTICATION_FAILED_MESSAGE = "Ошибка аутентификации";
+
+    public static final String USER_NOT_FOUND = "Пользователь с именем %s не найден";
 }

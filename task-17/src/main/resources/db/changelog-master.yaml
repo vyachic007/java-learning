@@ -8,4 +8,11 @@ databaseChangeLog:
   - include:
       file: db/changeset/1.0.1/03-update-test-data.sql
       relativeToChangelogFile: false
+  - include:
+      file: db/changeset/1.0.2/04-create-users-table.sql
+      relativeToChangelogFile: false
+  - include:
+      file: db/changeset/1.0.2/05-insert-test-users.sql
+      relativeToChangelogFile: false
+
 
