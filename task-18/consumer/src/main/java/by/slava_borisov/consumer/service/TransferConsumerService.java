@@ -9,6 +9,7 @@ import by.slava_borisov.consumer.model.TransferStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
@@ -56,11 +57,6 @@ public class TransferConsumerService {
     }
 
     public void processMessage(TransferMessage message) {
-        if (transferDao.isExistsById(message.getId())) {
-            log.info("Перевод с id={} уже обработан, пропускаем", message.getId());
-            return;
-        }
-
         Optional<Account> fromAccountOpt = accountDao.findById(message.getFromAccountId());
         Optional<Account> toAccountOpt = accountDao.findById(message.getToAccountId());
 
@@ -76,9 +72,16 @@ public class TransferConsumerService {
             return;
         }
 
+        executeTransfer(message);
+    }
+
+    private void executeTransfer(TransferMessage message) {
         try {
             transactionTemplate.executeWithoutResult(status -> {
-                boolean withdrawn = accountDao.withdrawIfEnough(message.getFromAccountId(), message.getAmount());
+                boolean withdrawn = accountDao.withdrawIfEnough(
+                        message.getFromAccountId(),
+                        message.getAmount()
+                );
 
                 if (!withdrawn) {
                     throw new IllegalArgumentException(
@@ -86,7 +89,10 @@ public class TransferConsumerService {
                     );
                 }
 
-                boolean deposited = accountDao.deposit(message.getToAccountId(), message.getAmount());
+                boolean deposited = accountDao.deposit(
+                        message.getToAccountId(),
+                        message.getAmount()
+                );
 
                 if (!deposited) {
                     throw new IllegalStateException(
@@ -110,14 +116,20 @@ public class TransferConsumerService {
         } catch (IllegalArgumentException e) {
             log.error("Ошибка валидации при обработке перевода id={}: {}", message.getId(), e.getMessage());
             saveErrorTransfer(message);
+
+        } catch (DataIntegrityViolationException e) {
+            log.info("Перевод с id={} уже существует, повторная обработка пропущена", message.getId());
+
         } catch (Exception e) {
             log.error("Сбой при обновлении балансов для перевода id={}", message.getId(), e);
+            saveErrorTransfer(message);
+            throw new RuntimeException("Ошибка обработки перевода id=" + message.getId(), e);
+        }
+    }
 
+    private void saveErrorTransfer(TransferMessage message) {
+        try {
             transactionTemplate.executeWithoutResult(status -> {
-                if (transferDao.isExistsById(message.getId())) {
-                    return;
-                }
-
                 Transfer errorTransfer = new Transfer(
                         message.getId(),
                         message.getFromAccountId(),
@@ -128,26 +140,8 @@ public class TransferConsumerService {
 
                 transferDao.save(errorTransfer);
             });
-
-            throw new RuntimeException("Ошибка обработки перевода id=" + message.getId(), e);
+        } catch (DataIntegrityViolationException e) {
+            log.info("Запись о переводе id={} уже существует, повторное сохранение ERROR пропущено", message.getId());
         }
-    }
-
-    private void saveErrorTransfer(TransferMessage message) {
-        transactionTemplate.executeWithoutResult(status -> {
-            if (transferDao.isExistsById(message.getId())) {
-                return;
-            }
-
-            Transfer errorTransfer = new Transfer(
-                    message.getId(),
-                    message.getFromAccountId(),
-                    message.getToAccountId(),
-                    message.getAmount(),
-                    TransferStatus.ERROR
-            );
-
-            transferDao.save(errorTransfer);
-        });
     }
 }
