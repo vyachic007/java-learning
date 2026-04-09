@@ -1,8 +1,8 @@
 package by.slava_borisov.consumer.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManagerFactory;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -89,6 +89,8 @@ public class AppConfig {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
         props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
         props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, env.getProperty("kafka.max.poll.records", Integer.class, 10));
+        props.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, env.getProperty("kafka.fetch.min.bytes", Integer.class, 1024));
+        props.put(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, env.getProperty("kafka.fetch.max.wait.ms", Integer.class, 1000));
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         return new DefaultKafkaConsumerFactory<>(props);
@@ -98,10 +100,12 @@ public class AppConfig {
     public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory(
             ConsumerFactory<String, String> consumerFactory) {
 
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         factory.setBatchListener(true);
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+
         return factory;
     }
 }
