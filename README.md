@@ -1,2 +1,3 @@
-# java-learning-course
+СЕНЛА
+# курс по java backend
 Борисов Вячеслав
